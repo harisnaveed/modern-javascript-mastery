@@ -1,0 +1,13 @@
+{
+  "name": "01-javascript-core-and-advanced",
+  "version": "1.0.0",
+  "description": "40 Sequentially numbered executable modules covering modern JavaScript from ES6 to ES2024+.",
+  "main": "run-all.js",
+  "scripts": {
+    "test": "node run-all.js",
+    "start": "node run-all.js"
+  },
+  "author": "Haris Ali",
+  "license": "MIT"
+}
+

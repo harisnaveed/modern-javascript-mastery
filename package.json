@@ -1,10 +1,15 @@
 {
-  "name": "es6-and-modern-javascript-mastery",
+  "name": "modern-javascript-and-nextjs-rendering-masterclass",
   "version": "1.0.0",
-  "description": "Complete Modern JavaScript (ES6+ to ES2024) Handbook notes and executable codebase for React, Next.js, and Node.js developers.",
+  "description": "Complete Modern JavaScript (ES6+ to ES2024) and Next.js 15 Rendering Architecture masterclass with 63 runnable modules and an interactive live Next.js playground for React, Next.js, and Node.js developers.",
   "main": "run-all.js",
   "scripts": {
     "test": "node run-all.js",
+    "test:js": "node 01-javascript-core-and-advanced/run-all.js",
+    "test:rendering": "node 02-rendering-react-and-nextjs/run-all.js",
+    "playground:dev": "npm.cmd --prefix 02-rendering-react-and-nextjs/playground run dev",
+    "playground:build": "npm.cmd --prefix 02-rendering-react-and-nextjs/playground run build",
+    "playground:start": "npm.cmd --prefix 02-rendering-react-and-nextjs/playground run start",
     "start": "node run-all.js"
   },
   "keywords": [
@@ -14,9 +19,18 @@
     "modern-javascript",
     "react",
     "nextjs",
+    "rendering",
+    "virtual-dom",
+    "react-fiber",
+    "ssr",
+    "ssg",
+    "isr",
+    "server-components",
+    "streaming-ssr",
+    "hydration",
+    "partial-prerendering",
     "nodejs",
-    "handbook",
-    "learn-javascript"
+    "playground"
   ],
   "author": "Haris Ali",
   "license": "MIT",
@@ -24,4 +38,3 @@
     "node": ">=18.0.0"
   }
 }
-

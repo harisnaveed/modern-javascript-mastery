@@ -1,0 +1,17 @@
+{
+  "name": "02-rendering-react-and-nextjs",
+  "version": "1.0.0",
+  "description": "23 Sequentially numbered executable modules covering React 19 and Next.js 15 rendering architecture.",
+  "main": "run-all.js",
+  "scripts": {
+    "test": "node run-all.js",
+    "start": "node run-all.js"
+  },
+  "author": "Haris Ali",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}
