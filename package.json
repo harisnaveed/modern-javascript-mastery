@@ -1,0 +1,27 @@
+{
+  "name": "es6-and-modern-javascript-mastery",
+  "version": "1.0.0",
+  "description": "Complete Modern JavaScript (ES6+ to ES2024) Handbook notes and executable codebase for React, Next.js, and Node.js developers.",
+  "main": "run-all.js",
+  "scripts": {
+    "test": "node run-all.js",
+    "start": "node run-all.js"
+  },
+  "keywords": [
+    "javascript",
+    "es6",
+    "es2024",
+    "modern-javascript",
+    "react",
+    "nextjs",
+    "nodejs",
+    "handbook",
+    "learn-javascript"
+  ],
+  "author": "Haris Ali",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
