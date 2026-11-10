@@ -9,8 +9,8 @@
  * Purpose:
  *   Executes both test suites across the repository:
  *   1. 01-javascript-core-and-advanced (40 Modules)
- *   2. 02-rendering-react-and-nextjs   (23 Modules)
- *   Total: 63 Modules Tested and Verified!
+ *   2. 02-rendering-react-and-nextjs   (24 Modules)
+ *   Total: 64 Modules Tested and Verified!
  * ============================================================================
  */
 
@@ -23,7 +23,7 @@ console.log("==================================================================\
 
 const folders = [
   { name: "01-javascript-core-and-advanced", expected: 40 },
-  { name: "02-rendering-react-and-nextjs", expected: 23 },
+  { name: "02-rendering-react-and-nextjs", expected: 24 },
 ];
 
 let totalPassed = 0;

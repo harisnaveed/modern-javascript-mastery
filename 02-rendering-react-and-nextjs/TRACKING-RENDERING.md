@@ -50,11 +50,12 @@ This tracking file records all concepts from the **Complete Guide to Rendering i
 - [x] `21-code-splitting-lazy-loading-and-selective-hydration.js` — `lazy()` & `next/dynamic`, Selective Hydration prioritizing user interactions
 - [x] `22-real-world-ecommerce-rendering-architecture.js` — Capstone Blueprint: Full Ecommerce rendering strategy (SSG, ISR, SSR, RSC, Client)
 - [x] `23-rendering-interview-puzzles-and-troubleshooting.js` — Top 15 Senior React/Next.js rendering interview questions & debugging
+- [x] `24-core-web-vitals-and-performance-optimization.js` — Core Web Vitals (LCP, INP, CLS), next/image priority, useTransition, audit simulation engine
 
 ---
 
 ## 📊 Summary Statistics
-- **Total Planned Modules:** 23
-- **Completed:** 23
+- **Total Planned Modules:** 24
+- **Completed:** 24
 - **Pending:** 0 (100% COMPLETE! 🎉)
-- **All 23 Modules Tested:** ✅ 23 Passed | 0 Failed (`node run-all.js`)
+- **All 24 Modules Tested:** ✅ 24 Passed | 0 Failed (`node run-all.js`)
