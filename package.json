@@ -1,7 +1,7 @@
 {
   "name": "modern-javascript-and-nextjs-rendering-masterclass",
   "version": "1.0.0",
-  "description": "Complete Modern JavaScript (ES6+ to ES2024) and Next.js 15 Rendering Architecture masterclass with 63 runnable modules and an interactive live Next.js playground for React, Next.js, and Node.js developers.",
+  "description": "Complete Modern JavaScript (ES6+ to ES2024) and Next.js 15 Rendering Architecture masterclass with 64 runnable modules and an interactive live Next.js playground for React, Next.js, and Node.js developers.",
   "main": "run-all.js",
   "scripts": {
     "test": "node run-all.js",
