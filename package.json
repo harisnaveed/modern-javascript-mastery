@@ -7,9 +7,10 @@
     "test": "node run-all.js",
     "test:js": "node 01-javascript-core-and-advanced/run-all.js",
     "test:rendering": "node 02-rendering-react-and-nextjs/run-all.js",
-    "playground:dev": "npm.cmd --prefix 02-rendering-react-and-nextjs/playground run dev",
-    "playground:build": "npm.cmd --prefix 02-rendering-react-and-nextjs/playground run build",
-    "playground:start": "npm.cmd --prefix 02-rendering-react-and-nextjs/playground run start",
+    "setup": "npm --prefix 02-rendering-react-and-nextjs/playground install",
+    "playground:dev": "npm --prefix 02-rendering-react-and-nextjs/playground run dev",
+    "playground:build": "npm --prefix 02-rendering-react-and-nextjs/playground run build",
+    "playground:start": "npm --prefix 02-rendering-react-and-nextjs/playground run start",
     "start": "node run-all.js"
   },
   "keywords": [

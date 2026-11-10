@@ -60,3 +60,4 @@ Open **`http://localhost:3000`** in your browser.
 - **Bundler / Compiler:** Turbopack
 - **Styling:** Custom CSS Design System with dark mode palette and responsive layout grid
 - **Zero Config:** Runs out of the box with zero external backend or database setup required.
+
