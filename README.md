@@ -33,6 +33,7 @@ d:\Projects\ES6-and-advance-concepts/
 ## 📖 The 7-Tier Standard in Every File
 
 Every single module answers:
+
 1. **The "Why"**: The historical bugs, memory leaks, and architectural limitations that forced the feature into existence.
 2. **PHP / Laravel Analogy**: Clear conceptual bridges for developers with a PHP/Laravel or classical OOP background.
 3. **The Modern Solution**: Clean, idiomatic modern syntax and runtime behavior.
@@ -49,7 +50,7 @@ No build step or `npm install` is required! All files use native JavaScript and 
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/modern-javascript-mastery.git
+git clone https://github.com/harisnaveed/modern-javascript-mastery.git
 cd modern-javascript-mastery
 
 # 1. Run all 63 modules across the entire repository
@@ -72,27 +73,27 @@ node 02-rendering-react-and-nextjs/18-partial-prerendering-ppr.js
 
 ## 📚 Section 1: Modern JavaScript Core & Advanced (40 Modules)
 
-| Phase | Files | Topic Focus |
-|---|---|---|
-| **Phase 1: Core Fundamentals** | `01` – `04` | `let`/`const` vs `var`, Template Literals & Tagged Templates, Arrow Functions & Lexical `this`, Default Parameters & Falsy Traps |
-| **Phase 2: Modern Operators** | `05` – `10` | Array/Object Destructuring, Spread & Rest Immutability, `map`/`forEach`/`filter`, `reduce` & ES2023 `toSorted`/`with`, Modern Object Methods, Optional Chaining (`?.`) & Nullish Coalescing (`??`) |
-| **Phase 3: Engine Internals** | `11` – `16` | V8 Hoisting & TDZ, Closures & Stale Closure React Trap, Higher-Order Functions & Currying, 4 Rules of `this`, Prototype Chain & Pollution, ES6 Classes & `#privateFields` |
-| **Phase 4: Advanced Collections** | `17` – `20` | `Set`/`Map`/`WeakMap`, Iterators & Generators (`yield`), Error Hierarchies & ES2022 `.cause`, JSON & `structuredClone` |
-| **Phase 5: Asynchronous JS** | `21` – `24` | Event Loop & Microtask/Macrotask Queues, Promises & Promisification, `Promise.all`/`allSettled`/`race`/`any`/`withResolvers`, `async`/`await` & Parallelism |
-| **Phase 6: Web & Node Features** | `25` – `28` | Fetch API & `AbortController`, ESM vs CommonJS & Dynamic Imports, ES2020–ES2024 Gems (`Object.groupBy`, `.at()`), DOM & Event Delegation |
-| **Phase 7: Fullstack Mastery** | `29` – `30` | React State Immutability, JSX Zero Trap, Next.js Server Components vs `"use client"`, Server Actions (`"use server"`), Node `EventEmitter` |
-| **Phase 8: Production Systems** | `31` – `35` | 28 Hands-On Exercises & Solutions, Debouncing & Throttling, Proxy & Reflect Metaprogramming, Streams & Buffers (Next.js Streaming SSR), V8 Garbage Collection & Memory Leak Prevention |
+| Phase                                   | Files       | Topic Focus                                                                                                                                                                                                                               |
+| --------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Phase 1: Core Fundamentals**          | `01` – `04` | `let`/`const` vs `var`, Template Literals & Tagged Templates, Arrow Functions & Lexical `this`, Default Parameters & Falsy Traps                                                                                                          |
+| **Phase 2: Modern Operators**           | `05` – `10` | Array/Object Destructuring, Spread & Rest Immutability, `map`/`forEach`/`filter`, `reduce` & ES2023 `toSorted`/`with`, Modern Object Methods, Optional Chaining (`?.`) & Nullish Coalescing (`??`)                                        |
+| **Phase 3: Engine Internals**           | `11` – `16` | V8 Hoisting & TDZ, Closures & Stale Closure React Trap, Higher-Order Functions & Currying, 4 Rules of `this`, Prototype Chain & Pollution, ES6 Classes & `#privateFields`                                                                 |
+| **Phase 4: Advanced Collections**       | `17` – `20` | `Set`/`Map`/`WeakMap`, Iterators & Generators (`yield`), Error Hierarchies & ES2022 `.cause`, JSON & `structuredClone`                                                                                                                    |
+| **Phase 5: Asynchronous JS**            | `21` – `24` | Event Loop & Microtask/Macrotask Queues, Promises & Promisification, `Promise.all`/`allSettled`/`race`/`any`/`withResolvers`, `async`/`await` & Parallelism                                                                               |
+| **Phase 6: Web & Node Features**        | `25` – `28` | Fetch API & `AbortController`, ESM vs CommonJS & Dynamic Imports, ES2020–ES2024 Gems (`Object.groupBy`, `.at()`), DOM & Event Delegation                                                                                                  |
+| **Phase 7: Fullstack Mastery**          | `29` – `30` | React State Immutability, JSX Zero Trap, Next.js Server Components vs `"use client"`, Server Actions (`"use server"`), Node `EventEmitter`                                                                                                |
+| **Phase 8: Production Systems**         | `31` – `35` | 28 Hands-On Exercises & Solutions, Debouncing & Throttling, Proxy & Reflect Metaprogramming, Streams & Buffers (Next.js Streaming SSR), V8 Garbage Collection & Memory Leak Prevention                                                    |
 | **Phase 9: Concurrency & Architecture** | `36` – `40` | Web Workers & `worker_threads` (SharedArrayBuffer), GoF Design Patterns (Singleton, Factory, Observer, Strategy), Security (XSS, Prototype Pollution, Timing Attacks), WebSockets & Server-Sent Events (SSE), Senior JS Interview Puzzles |
 
 ---
 
 ## 🎨 Section 2: Complete Guide to Rendering in React & Next.js (23 Modules)
 
-| Phase | Files | Topic Focus |
-|---|---|---|
-| **Phase 1: DOM & React Core** | `01` – `06` | What is Rendering & Browser Pipeline (Parse -> Style -> Layout -> Paint -> Composite), Real DOM Tree, Virtual DOM & Declarative UI, 3-Phase Lifecycle (Trigger -> Render -> Commit), Reconciliation Heuristic Diffing & The Golden Rule of Keys, React Fiber Architecture (Linked List, Time-Slicing, Double Buffering) |
-| **Phase 2: The 4 Rendering Strategies** | `07` – `11` | Client-Side Rendering (CSR & `useEffect` waterfall), Server-Side Rendering (SSR & request-time dynamic HTML), Static Site Generation (SSG & build-time CDN edge distribution), Incremental Static Regeneration (ISR & Stale-While-Revalidate), Master Rendering Comparison Matrix & Hybrid Architecture |
-| **Phase 3: Hydration & Server Components** | `12` – `16` | What is Hydration (Breathes life into static HTML), Hydration Mismatches & The 3 Production Fixes, Server Components vs Client Components (`"use client"`), Server & Client Composition Patterns (`children` slot pattern), RSC Payload Internals & Soft Navigation |
+| Phase                                       | Files       | Topic Focus                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Phase 1: DOM & React Core**               | `01` – `06` | What is Rendering & Browser Pipeline (Parse -> Style -> Layout -> Paint -> Composite), Real DOM Tree, Virtual DOM & Declarative UI, 3-Phase Lifecycle (Trigger -> Render -> Commit), Reconciliation Heuristic Diffing & The Golden Rule of Keys, React Fiber Architecture (Linked List, Time-Slicing, Double Buffering)     |
+| **Phase 2: The 4 Rendering Strategies**     | `07` – `11` | Client-Side Rendering (CSR & `useEffect` waterfall), Server-Side Rendering (SSR & request-time dynamic HTML), Static Site Generation (SSG & build-time CDN edge distribution), Incremental Static Regeneration (ISR & Stale-While-Revalidate), Master Rendering Comparison Matrix & Hybrid Architecture                     |
+| **Phase 3: Hydration & Server Components**  | `12` – `16` | What is Hydration (Breathes life into static HTML), Hydration Mismatches & The 3 Production Fixes, Server Components vs Client Components (`"use client"`), Server & Client Composition Patterns (`children` slot pattern), RSC Payload Internals & Soft Navigation                                                         |
 | **Phase 4: Advanced Next.js & Performance** | `17` – `23` | Streaming SSR with `<Suspense>` & `loading.js`, Partial Prerendering (PPR static shell + dynamic streaming holes), Static vs Dynamic Route Evaluation & The 4 Caches, Client-Side Navigation & Viewport Prefetching, Code Splitting & Selective Hydration, Real-World Ecommerce Blueprint, Senior Rendering Interview Traps |
 
 ---
