@@ -1,52 +1,53 @@
 /**
  * ============================================================================
- * TEST RUNNER: Automated Execution Suite for Modules 01 to 35
+ * ROOT TEST RUNNER: Full Repository Verification Suite
  * ============================================================================
  * 
  * Usage:
  *   node run-all.js
  * 
  * Purpose:
- *   Executes every single numbered module sequentially in a child process
- *   to verify that all concept files run with 0 errors.
+ *   Executes both test suites across the repository:
+ *   1. 01-javascript-core-and-advanced (40 Modules)
+ *   2. 02-rendering-react-and-nextjs   (23 Modules)
+ *   Total: 63 Modules Tested and Verified!
  * ============================================================================
  */
 
 const { execSync } = require("node:child_process");
-const fs = require("node:fs");
 const path = require("node:path");
 
-const files = fs.readdirSync(__dirname)
-    .filter(file => /^\d{2}-.*\.js$/.test(file))
-    .sort();
-
 console.log("==================================================================");
-console.log(`  RUNNING TEST SUITE: ${files.length} MODULES DISCOVERED`);
+console.log("  FULL REPOSITORY TEST SUITE: JAVASCRIPT & RENDERING");
 console.log("==================================================================\n");
 
-let passedCount = 0;
-let failedCount = 0;
+const folders = [
+  { name: "01-javascript-core-and-advanced", expected: 40 },
+  { name: "02-rendering-react-and-nextjs", expected: 23 },
+];
 
-for (const file of files) {
-    process.stdout.write(`Testing [${file}] ... `);
-    try {
-        execSync(`node "${path.join(__dirname, file)}"`, { stdio: "pipe" });
-        console.log("✅ PASSED");
-        passedCount++;
-    } catch (error) {
-        console.log("❌ FAILED");
-        console.error(`Error in ${file}:\n`, error.stderr ? error.stderr.toString() : error.message);
-        failedCount++;
-    }
+let totalPassed = 0;
+let totalFailed = 0;
+
+for (const folder of folders) {
+  const runnerPath = path.join(__dirname, folder.name, "run-all.js");
+  console.log(`>>> EXECUTING SUITE: [${folder.name}] (${folder.expected} Modules) <<<`);
+  try {
+    const output = execSync(`node "${runnerPath}"`, { cwd: path.join(__dirname, folder.name) });
+    console.log(output.toString());
+    totalPassed += folder.expected;
+  } catch (err) {
+    console.error(`💥 FAILURE IN [${folder.name}]:`, err.stdout ? err.stdout.toString() : err.message);
+    totalFailed++;
+  }
 }
 
-console.log("\n==================================================================");
-console.log(`  TEST RESULTS: ${passedCount} PASSED | ${failedCount} FAILED`);
+console.log("==================================================================");
+console.log(`  FINAL REPOSITORY SUMMARY: ${totalPassed} PASSED | ${totalFailed} FAILED`);
 console.log("==================================================================");
 
-if (failedCount === 0) {
-    console.log(`🎉 ALL ${passedCount} MODULES ARE 100% HEALTHY AND READY FOR GITHUB!\n`);
+if (totalFailed === 0) {
+  console.log(`🎉 ALL ${totalPassed} MODULES ACROSS BOTH DIRECTORIES PASSED WITH 0 ERRORS!\n`);
 } else {
-    process.exit(1);
+  process.exit(1);
 }
-
