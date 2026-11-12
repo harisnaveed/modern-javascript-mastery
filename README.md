@@ -1,6 +1,6 @@
 # Modern JavaScript & Next.js Rendering Masterclass 🚀
 
-> A complete, production-grade guide to **Modern JavaScript (ES6 to ES2024+)** and the **Complete Architecture of Rendering in React.js & Next.js 15 (App Router)**. Features **64 standalone CLI learning modules** and an **interactive, live Next.js web application playground with all 24 rendering concepts**. Built with deep comparisons to classical backend paradigms (PHP/Laravel).
+> A complete, production-grade guide to **Modern JavaScript (ES6 to ES2024+)**, the **Complete Architecture of Rendering in React.js & Next.js 15 (App Router)**, and **React Foundations & Concept Internals**. Features **79 standalone CLI learning modules**, a **Next.js rendering playground**, and an **interactive Vite + React concepts playground with all 15 React foundation labs**. Built with deep comparisons to classical backend paradigms (PHP/Laravel).
 
 ---
 
@@ -85,12 +85,29 @@ Once started, open your browser and navigate to:
 
 ---
 
-### Step 4: Run the CLI Test Suites (Command Line)
+### Step 4: Run the Dedicated React Concepts Playground (New!)
 
-You can run automated test suites across all 64 modules directly from your terminal:
+Explore the dedicated, interactive Vite + React application with all 25 React foundations, closures, async/await, and architecture labs:
 
 ```bash
-# 1. Run all 64 modules across the entire repository (JavaScript + Rendering):
+# Start the Vite React development server
+npm run react-playground:dev
+
+# On Windows PowerShell:
+npm.cmd run react-playground:dev
+```
+
+Once started, open your browser and navigate to:
+👉 **`http://localhost:5173`**
+
+---
+
+### Step 5: Run the CLI Test Suites (Command Line)
+
+You can run automated test suites across all 89 modules directly from your terminal:
+
+```bash
+# 1. Run all 89 modules across the entire repository (JS + Rendering + React):
 npm test
 # (or 'node run-all.js')
 
@@ -100,13 +117,20 @@ npm run test:js
 # 3. Run only the Rendering architecture suite (24 modules):
 npm run test:rendering
 
-# 4. Run any individual concept file directly with Node:
+# 4. Run only the React Foundations suite (25 modules):
+npm run test:react
+
+# 5. Run any individual concept file directly with Node:
 node 01-javascript-core-and-advanced/01-var-let-const-and-scoping.js
 node 01-javascript-core-and-advanced/12-closures-and-lexical-environment.js
-node 01-javascript-core-and-advanced/24-async-await-and-concurrency.js
 node 02-rendering-react-and-nextjs/06-react-fiber-architecture-and-scheduling.js
-node 02-rendering-react-and-nextjs/17-streaming-ssr-and-react-suspense.js
-node 02-rendering-react-and-nextjs/24-core-web-vitals-and-performance-optimization.js
+node 03-react-foundations-and-playground/01-mutability-immutability-and-pure-functions.js
+node 03-react-foundations-and-playground/02-closures-lexical-scope-and-encapsulation.js
+node 03-react-foundations-and-playground/08-async-await-concurrency-and-error-handling.js
+node 03-react-foundations-and-playground/12-react-architecture-vdom-fiber-and-reconciliation.js
+node 03-react-foundations-and-playground/16-immutable-array-and-object-manipulation-patterns.js
+node 03-react-foundations-and-playground/23-fiber-internals-lanes-priority-and-time-slicing.js
+node 03-react-foundations-and-playground/25-react-19-actions-useactionstate-and-useoptimistic.js
 ```
 
 > [!TIP]
@@ -121,8 +145,31 @@ node 02-rendering-react-and-nextjs/24-core-web-vitals-and-performance-optimizati
 ## 🗂️ Project Structure
 
 ```
-d:\Projects\ES6-and-advance-concepts/
-├── 01-javascript-core-and-advanced/     # 40 Modules: Modern & Advanced JavaScript (ES6 to ES2024+)
+d:\Projects\modern-javascript-mastery/
+├── 01-javascript-core-and-advanced/         # 40 Modules: Modern & Advanced JavaScript (ES6 to ES2024+)
+│   ├── 01-var-let-const-and-scoping.js
+│   └── ... (40 standalone runnable modules)
+│
+├── 02-rendering-react-and-nextjs/           # 24 Modules: Rendering Architecture & Next.js 15
+│   ├── playground/                          # Interactive Next.js 15 Rendering Web App
+│   └── ... (24 standalone runnable modules)
+│
+├── 03-react-foundations-and-playground/     # 25 Modules: React Concepts, Hooks & Architecture
+│   ├── react-playground/                    # Interactive Vite + React Concept Labs App (25 Labs)
+│   ├── REACT-STRUCTURE-RECONCILIATION-AND-FIBER.md # Deep architectural guide
+│   ├── STATE-MANAGEMENT-CONTEXT-REDUX-ZUSTAND.md   # Context API vs Redux vs Zustand master guide
+│   ├── 01-mutability-immutability-and-pure-functions.js
+│   ├── ... (25 standalone runnable modules)
+│   ├── 23-fiber-internals-lanes-priority-and-time-slicing.js
+│   ├── 24-react-error-boundaries-and-resilience.js
+│   ├── 25-react-19-actions-useactionstate-and-useoptimistic.js
+│   ├── run-all.js                           # Runs all 25 React modules (100% Passing)
+│   └── TRACKING-REACT-FOUNDATIONS.md
+│
+├── run-all.js                               # Root test runner: executes all 89 modules
+├── package.json
+└── README.md
+```
 │   ├── 01-var-let-const-and-scoping.js
 │   ├── ...
 │   ├── 40-senior-javascript-interview-and-gotchas.js

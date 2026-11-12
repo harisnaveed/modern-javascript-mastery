@@ -1,0 +1,3879 @@
+Complete Guide: Mutable, Immutable, Closures, Callbacks, HOC & Related JavaScript/React Concepts
+These are some of the most important concepts in modern JavaScript and React development.
+
+If you understand these concepts properly, you will find it much easier to understand:
+- React Hooks (useState, useEffect, useCallback, useMemo)
+- React rendering and re-rendering
+- Component lifecycle
+- State management (Context API, Redux, Zustand)
+- Higher-order components
+- Functional programming
+- Asynchronous JavaScript
+- Next.js Server and Client Components
+- Performance optimization
+I'll explain these concepts from the JavaScript fundamentals and then connect them with React and Next.js.
+PART 1: Mutable vs Immutable in JavaScript and React
+Let's start with one of the most important concepts.
+1. What is Mutable?
+Mutable means something whose value or data can be changed after it has been created.
+
+In JavaScript, objects and arrays are mutable by default.
+Example 1: Mutable Object
+let user = {
+    name: "Haris",
+    age: 25
+};
+
+user.age = 26;
+
+console.log(user);
+
+Output:
+{
+    name: "Haris",
+    age: 26
+}
+
+Here, we created an object and modified its existing property.
+
+We didn't create a new object. We modified the original object.
+
+This is called mutation.
+Example 2: Mutable Array
+let numbers = [10, 20, 30];
+
+numbers.push(40);
+
+console.log(numbers);
+
+Output:
+[10, 20, 30, 40]
+
+We modified the original array using push().
+
+Other common mutable array methods include:
+Method	Purpose
+push()	Adds an item at the end
+pop()	Removes the last item
+shift()	Removes the first item
+unshift()	Adds an item at the beginning
+splice()	Adds, removes or replaces items
+sort()	Sorts the original array
+reverse()	Reverses the original array
+
+
+Important: These methods modify the original array.
+2. What is Immutable?
+Immutable means instead of modifying the existing data, you create a new value or a new object with the required changes.
+
+Let's understand with an example.
+Example 1: Immutable Object
+const user = {
+    name: "Haris",
+    age: 25
+};
+
+const updatedUser = {
+    ...user,
+    age: 26
+};
+
+console.log(user);
+console.log(updatedUser);
+
+Output:
+// Original
+{
+    name: "Haris",
+    age: 25
+}
+
+// New object
+{
+    name: "Haris",
+    age: 26
+}
+
+Notice something:
+- user remains unchanged.
+- updatedUser is a new object.
+- We used the spread operator (...) to copy existing properties.
+Example 2: Immutable Array
+const numbers = [10, 20, 30];
+
+const updatedNumbers = [...numbers, 40];
+
+console.log(numbers);
+console.log(updatedNumbers);
+
+Output:
+// Original
+[10, 20, 30]
+
+// New array
+[10, 20, 30, 40]
+
+We created a new array instead of modifying the original one.
+Mutable vs Immutable Methods
+Mutable Methods	Immutable Alternatives
+push()	[...array, newItem]
+pop()	array.slice(0, -1)
+splice()	filter() or toSpliced()
+sort()	toSorted()
+reverse()	toReversed()
+Direct object property assignment	Object spread {...object}
+
+
+Remember that methods such as map(), filter() and slice() return new arrays without modifying the original array.
+3. Why Does React Prefer Immutability?
+This is where the concept becomes particularly important.
+
+React uses state to manage component data.
+
+For example:
+import { useState } from "react";
+
+function Counter() {
+
+    const [count, setCount] = useState(0);
+
+    return (
+        <>
+            <h1>{count}</h1>
+
+            <button onClick={() => setCount(count + 1)}>
+                Increase
+            </button>
+        </>
+    );
+}
+
+When we call:
+setCount(count + 1);
+
+React receives a new state value and schedules a re-render.
+
+Now consider an object.
+Incorrect Approach: Mutating State
+import { useState } from "react";
+
+function User() {
+
+    const [user, setUser] = useState({
+        name: "Haris",
+        age: 25
+    });
+
+    const updateAge = () => {
+
+        user.age = 26;
+
+        setUser(user);
+    };
+
+    return (
+        <>
+            <h1>{user.age}</h1>
+
+            <button onClick={updateAge}>
+                Update Age
+            </button>
+        </>
+    );
+}
+
+What's wrong?
+
+We modified the existing object.
+
+Then we passed the same object reference back to React.
+
+React uses Object.is() to compare the previous and next state. Since both references point to the same object, React can skip the update.
+Correct Approach: Immutable Update
+import { useState } from "react";
+
+function User() {
+
+    const [user, setUser] = useState({
+        name: "Haris",
+        age: 25
+    });
+
+    const updateAge = () => {
+
+        setUser(previousUser => ({
+            ...previousUser,
+            age: 26
+        }));
+
+    };
+
+    return (
+        <>
+            <h1>{user.age}</h1>
+
+            <button onClick={updateAge}>
+                Update Age
+            </button>
+        </>
+    );
+}
+
+Here:
+1. We create a new object.
+2. We copy the existing properties.
+3. We update the age.
+4. We pass the new object to React.
+5. React can detect the changed reference.
+Important: React doesn't technically prohibit mutation. However, mutating existing state can cause bugs because React relies heavily on identity comparisons and state snapshots.
+Why is Immutability Important?
+1. Makes state changes predictable.
+2. Helps React detect changes.
+3. Makes debugging easier.
+4. Prevents unexpected side effects.
+5. Helps performance optimizations.
+6. Makes Redux and other state management libraries easier to use.
+4. Shallow Copy vs Deep Copy
+Another important concept related to immutability.
+
+Consider this object:
+const user = {
+    name: "Haris",
+
+    address: {
+        city: "Wah Cantt",
+        country: "Pakistan"
+    }
+};
+
+Now create a copy:
+const updatedUser = { ...user };
+
+Is this a completely independent copy?
+
+No!
+
+The spread operator creates a shallow copy.
+
+It copies the top-level properties, but nested objects still share references.
+
+For example:
+updatedUser.address.city = "Islamabad";
+
+console.log(user.address.city);
+
+Output:
+Islamabad
+
+Why?
+
+Because both objects reference the same nested address object.
+Deep Copy
+A deep copy creates independent copies of nested objects too.
+
+For structured-cloneable data:
+const updatedUser = structuredClone(user);
+
+updatedUser.address.city = "Islamabad";
+
+console.log(user.address.city);
+console.log(updatedUser.address.city);
+
+Output:
+Wah Cantt
+Islamabad
+
+Now the original object remains unchanged.
+
+Remember:
+- Shallow copy: Copies the first level.
+- Deep copy: Copies nested structures as well.
+In React, you usually don't need to deep-clone your entire state. Instead, create new objects along the path you want to update.
+
+Example:
+setUser(previous => ({
+    ...previous,
+    address: {
+        ...previous.address,
+        city: "Islamabad"
+    }
+}));
+
+PART 2: Closures in JavaScript
+Closures are one of the most important advanced JavaScript concepts.
+
+They are especially important when working with:
+- React Hooks
+- useEffect
+- useState
+- Event handlers
+- Callbacks
+- Asynchronous operations
+- Custom Hooks
+1. What is a Closure?
+A closure happens when a function remembers and can access variables from its outer lexical scope, even after that outer function has finished executing.
+
+Let's break this definition down.
+First Understand Scope
+Scope determines where a variable can be accessed.
+
+JavaScript has three main types of scope:
+1. Global Scope
+2. Function Scope
+3. Block Scope
+Example:
+let name = "Haris"; // Global scope
+
+function user() {
+
+    let age = 25; // Function scope
+
+    if (true) {
+
+        let city = "Wah Cantt"; // Block scope
+
+        console.log(name);
+        console.log(age);
+        console.log(city);
+    }
+
+}
+
+The inner block can access variables from its outer scopes.
+
+This is called lexical scoping.
+
+Lexical scoping means a function's accessible variables are determined by where that function is written in the source code.
+Now Understand Closure
+function outerFunction() {
+
+    let name = "Haris";
+
+    function innerFunction() {
+
+        console.log(name);
+
+    }
+
+    return innerFunction;
+
+}
+
+const myFunction = outerFunction();
+
+myFunction();
+
+Output:
+Haris
+
+Let's understand what happened.
+
+Step 1:
+
+We called:
+outerFunction();
+
+JavaScript created the function's execution context.
+
+Step 2:
+
+Inside it, we created:
+let name = "Haris";
+
+Step 3:
+
+We created another function:
+function innerFunction() {
+    console.log(name);
+}
+
+The inner function accesses the variable from its outer scope.
+
+Step 4:
+
+We returned the inner function:
+return innerFunction;
+
+Step 5:
+
+The outer function finished executing.
+
+Normally, we might expect its local variables to become unavailable.
+
+However, the returned inner function still has access to the lexical environment containing name.
+
+That's a closure!
+Visual Understanding
+outerFunction()
+     |
+     |---- name = "Haris"
+     |
+     |---- innerFunction()
+                |
+                |---- Accesses name
+     |
+     |---- Returns innerFunction
+                  |
+                  |
+            myFunction()
+                  |
+                  |
+            Prints "Haris"
+
+The important point:
+
+A closure is created when a function retains access to its surrounding lexical environment.
+2. Practical Example: Private Variables
+Closures can be used to create private data.
+function createBankAccount() {
+
+    let balance = 1000;
+
+    return {
+
+        deposit(amount) {
+            balance += amount;
+            return balance;
+        },
+
+        withdraw(amount) {
+            balance -= amount;
+            return balance;
+        },
+
+        getBalance() {
+            return balance;
+        }
+
+    };
+
+}
+
+const account = createBankAccount();
+
+console.log(account.getBalance());
+
+console.log(account.deposit(500));
+
+console.log(account.withdraw(200));
+
+Output:
+1000
+1500
+1300
+
+Notice:
+
+We cannot directly access:
+console.log(account.balance);
+
+Output:
+undefined
+
+Why?
+
+Because balance is a local variable inside createBankAccount().
+
+The returned methods have access to it through closures.
+
+This is one way to implement data privacy in JavaScript.
+3. Closures in React
+Closures are everywhere in React.
+
+Consider this example:
+import { useState } from "react";
+
+function Counter() {
+
+    const [count, setCount] = useState(0);
+
+    const handleClick = () => {
+
+        console.log(count);
+
+        setCount(count + 1);
+
+    };
+
+    return (
+        <button onClick={handleClick}>
+            Count: {count}
+        </button>
+    );
+
+}
+
+Here:
+const handleClick = () => {
+    console.log(count);
+};
+
+The handleClick function remembers the count variable from the component's render.
+
+This is a closure.
+
+Every time React renders the component, it creates a new render scope with the current state snapshot.
+
+The event handler created during that render closes over that render's values.
+Important: Stale Closure Problem
+This is a common problem in React.
+
+Consider:
+import { useState } from "react";
+
+function Counter() {
+
+    const [count, setCount] = useState(0);
+
+    const increase = () => {
+
+        setTimeout(() => {
+
+            setCount(count + 1);
+
+        }, 3000);
+
+    };
+
+    return (
+        <>
+            <h1>{count}</h1>
+
+            <button onClick={increase}>
+                Increase After 3 Seconds
+            </button>
+        </>
+    );
+
+}
+
+Suppose:
+1. Initial count is 0.
+2. You click the button.
+3. The timeout captures count = 0.
+4. You increase the count using another button to 5.
+5. After three seconds, the timeout executes.
+It uses the old captured value:
+setCount(0 + 1);
+
+The count becomes 1 instead of 6.
+
+This is called a stale closure.
+Solution: Functional State Update
+setTimeout(() => {
+
+    setCount(previousCount => previousCount + 1);
+
+}, 3000);
+
+Now React provides the latest state value to the updater function.
+
+This avoids relying on the old captured count.
+Closures in useEffect
+Another common example:
+import { useEffect, useState } from "react";
+
+function Counter() {
+
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+
+        const timer = setInterval(() => {
+
+            console.log(count);
+
+        }, 1000);
+
+        return () => clearInterval(timer);
+
+    }, []);
+
+    return (
+        <button onClick={() => setCount(c => c + 1)}>
+            {count}
+        </button>
+    );
+
+}
+
+What happens?
+
+The effect runs after the initial render.
+
+Because the dependency array is empty:
+[]
+
+The interval callback closes over the initial value of count, which is 0.
+
+It keeps printing 0.
+
+One solution is:
+useEffect(() => {
+
+    const timer = setInterval(() => {
+
+        console.log(count);
+
+    }, 1000);
+
+    return () => clearInterval(timer);
+
+}, [count]);
+
+Now the effect is recreated whenever count changes.
+
+Important: Closures are not a React feature. They are a JavaScript language feature that React developers use constantly.
+PART 3: Callback Functions in JavaScript and React
+1. What is a Callback?
+A callback is a function that is passed to another function as an argument so that the receiving function can call it.
+
+In simple words:
+
+You give one function to another function, and the receiving function decides when to execute it.
+Basic Example
+function greet(name, callback) {
+
+    console.log("Hello " + name);
+
+    callback();
+
+}
+
+function sayWelcome() {
+
+    console.log("Welcome to JavaScript!");
+
+}
+
+greet("Haris", sayWelcome);
+
+Output:
+Hello Haris
+Welcome to JavaScript!
+
+Let's understand:
+greet("Haris", sayWelcome);
+
+Here, sayWelcome is passed as an argument.
+
+Inside greet():
+callback();
+
+The callback function gets executed.
+
+Notice the difference:
+greet("Haris", sayWelcome);
+
+We pass the function itself.
+
+But:
+greet("Haris", sayWelcome());
+
+We execute the function immediately and pass its return value.
+
+This distinction is very important.
+2. Types of Callbacks
+Callbacks are generally used in two situations.
+A. Synchronous Callback
+A synchronous callback executes immediately as part of the current operation.
+
+Example:
+function calculate(a, b, callback) {
+
+    const result = a + b;
+
+    callback(result);
+
+}
+
+function display(result) {
+
+    console.log("Result:", result);
+
+}
+
+calculate(10, 20, display);
+
+Output:
+Result: 30
+
+Other examples:
+const numbers = [1, 2, 3, 4];
+
+numbers.map(function(number) {
+
+    return number * 2;
+
+});
+
+Here, the function passed to map() is a callback.
+
+Other array methods using callbacks:
+- map()
+- filter()
+- forEach()
+- find()
+- reduce()
+- some()
+- every()
+B. Asynchronous Callback
+An asynchronous callback executes later, after an asynchronous operation completes or an event occurs.
+
+Example:
+console.log("Start");
+
+setTimeout(() => {
+
+    console.log("Callback executed");
+
+}, 2000);
+
+console.log("End");
+
+Output:
+Start
+End
+Callback executed
+
+Why?
+
+Because setTimeout() schedules the callback to execute later.
+
+JavaScript continues executing the remaining synchronous code.
+
+The event loop coordinates when the scheduled callback can execute.
+
+Other examples:
+- setTimeout()
+- setInterval()
+- DOM event listeners
+- Node.js file system callbacks
+- API-related callbacks
+3. Callbacks in React
+React uses callbacks extensively.
+Example 1: Event Handler
+function App() {
+
+    const handleClick = () => {
+
+        alert("Button clicked!");
+
+    };
+
+    return (
+
+        <button onClick={handleClick}>
+            Click Me
+        </button>
+
+    );
+
+}
+
+Here:
+onClick={handleClick}
+
+We pass a function to React.
+
+React executes that function when the user clicks the button.
+Example 2: Callback as a Prop
+This is particularly important when building reusable components.
+
+Parent Component:
+function Parent() {
+
+    const handleMessage = (message) => {
+
+        console.log(message);
+
+    };
+
+    return (
+
+        <Child onSendMessage={handleMessage} />
+
+    );
+
+}
+
+Child Component:
+function Child({ onSendMessage }) {
+
+    return (
+
+        <button onClick={() => onSendMessage("Hello Parent!")}>
+            Send Message
+        </button>
+
+    );
+
+}
+
+What's happening?
+1. Parent creates a function.
+2. Parent passes that function to Child.
+3. Child receives it as a prop.
+4. Child executes the function.
+5. Parent's function runs.
+This is called a callback prop.
+Why Is This Useful?
+Imagine your repair application.
+
+You have:
+RepairWidget
+    |
+    |---- DeviceSelection
+    |
+    |---- BrandSelection
+    |
+    |---- ModelSelection
+    |
+    |---- IssueSelection
+
+You can pass callback functions from the parent to child components.
+
+For example:
+<DeviceSelection onSelectDevice={handleDeviceSelection} />
+
+When a device is selected, the child calls the parent's function.
+
+This allows child components to communicate events to their parents.
+PART 4: Higher-Order Functions (HOF)
+Before understanding HOC, you should understand HOF.
+
+These two concepts are related but not identical.
+1. What is a Higher-Order Function?
+A Higher-Order Function is a function that does at least one of these things:
+1. Takes another function as an argument.
+2. Returns another function.
+Example:
+function calculate(a, b, operation) {
+
+    return operation(a, b);
+
+}
+
+function addition(a, b) {
+
+    return a + b;
+
+}
+
+function subtraction(a, b) {
+
+    return a - b;
+
+}
+
+console.log(calculate(10, 5, addition));
+
+console.log(calculate(10, 5, subtraction));
+
+Output:
+15
+5
+
+Here:
+function calculate(a, b, operation)
+
+calculate() accepts another function.
+
+Therefore, it is a Higher-Order Function.
+Another Example: map()
+const numbers = [1, 2, 3, 4];
+
+const result = numbers.map(number => number * 2);
+
+console.log(result);
+
+Output:
+[2, 4, 6, 8]
+
+map() is a Higher-Order Function because it accepts a callback function.
+HOF vs Callback
+These concepts are closely related.
+Concept	Meaning
+Higher-Order Function	Function that accepts or returns another function
+Callback	Function passed to another function
+Callback execution	The moment the receiving function calls the callback
+
+
+Example:
+function process(callback) {
+
+    callback();
+
+}
+
+- process() is the Higher-Order Function.
+- callback is the callback function.
+PART 5: Higher-Order Components (HOC) in React
+Now that you understand Higher-Order Functions, HOC becomes much easier.
+1. What is HOC?
+HOC stands for Higher-Order Component.
+
+A Higher-Order Component is a function that takes a React component as an argument and returns an enhanced component.
+
+In simple words:
+
+HOC allows you to reuse component logic by wrapping one component inside another component.
+
+Its basic structure looks like this:
+function withSomething(Component) {
+
+    return function EnhancedComponent(props) {
+
+        return <Component {...props} />;
+
+    };
+
+}
+
+Let's understand through practical examples.
+2. Example: HOC for Authentication
+Imagine you have an application with different pages:
+- Dashboard
+- Profile
+- Settings
+- Admin Panel
+You want only authenticated users to access these pages.
+
+Without HOC, you might repeat authentication checks in multiple components.
+
+Instead, create one HOC.
+Step 1: Create HOC
+Create a file:
+
+withAuth.jsx
+function withAuth(Component) {
+
+    return function ProtectedComponent(props) {
+
+        const isAuthenticated = true;
+
+        if (!isAuthenticated) {
+
+            return <h1>Please Login First</h1>;
+
+        }
+
+        return <Component {...props} />;
+
+    };
+
+}
+
+export default withAuth;
+
+Step 2: Create Dashboard Component
+Dashboard.jsx
+function Dashboard() {
+
+    return (
+
+        <h1>Welcome to Dashboard</h1>
+
+    );
+
+}
+
+export default Dashboard;
+
+Step 3: Wrap Dashboard with HOC
+import Dashboard from "./Dashboard";
+import withAuth from "./withAuth";
+
+const ProtectedDashboard = withAuth(Dashboard);
+
+export default ProtectedDashboard;
+
+Now:
+<ProtectedDashboard />
+
+First, the authentication logic executes.
+
+If authenticated, the Dashboard component renders.
+
+Otherwise, the login message appears.
+Visual Understanding
+        withAuth()
+            |
+            |
+       Dashboard
+            |
+            |
+     ProtectedDashboard
+            |
+            |
+       Authentication
+            |
+       -------------
+       |           |
+   Authenticated  Not Authenticated
+       |           |
+    Dashboard    Login Message
+
+This is the basic idea of HOC.
+
+Important: This example demonstrates the HOC pattern. In a real application, authentication should use actual authentication state and proper server-side authorization. HOC is not a security boundary by itself.
+3. Example: HOC for Loading State
+Suppose multiple components need loading functionality.
+
+Instead of repeating loading logic, you can create an HOC.
+function withLoading(Component) {
+
+    return function LoadingComponent({ isLoading, ...props }) {
+
+        if (isLoading) {
+
+            return <h2>Loading...</h2>;
+
+        }
+
+        return <Component {...props} />;
+
+    };
+
+}
+
+Now create a component:
+function UserList({ users }) {
+
+    return (
+
+        <ul>
+
+            {users.map(user => (
+
+                <li key={user.id}>
+                    {user.name}
+                </li>
+
+            ))}
+
+        </ul>
+
+    );
+
+}
+
+Wrap it:
+const UserListWithLoading = withLoading(UserList);
+
+Use it:
+<UserListWithLoading
+    isLoading={false}
+    users={[
+        { id: 1, name: "Haris" },
+        { id: 2, name: "Ali" }
+    ]}
+/>
+
+Now the component automatically handles the loading state.
+4. Important HOC Concepts
+There are some important things you should understand.
+A. Component Wrapping
+const EnhancedComponent = withAuth(Dashboard);
+
+Here, withAuth receives Dashboard and returns another component.
+B. Props Forwarding
+return <Component {...props} />;
+
+This forwards the received props to the original component.
+
+Without forwarding props, the original component might not receive the data it needs.
+C. HOC Composition
+You can combine multiple HOCs.
+const EnhancedDashboard = withAuth(
+    withLoading(Dashboard)
+);
+
+Now the Dashboard has both authentication and loading functionality.
+D. Don't Create HOCs Inside Render
+Avoid:
+function App() {
+
+    const EnhancedDashboard = withAuth(Dashboard);
+
+    return <EnhancedDashboard />;
+
+}
+
+Creating a new component type on every render can cause React to reset component state and remount the subtree.
+
+Define HOCs and enhanced components outside the rendering component whenever possible.
+PART 6: HOC vs Hooks vs Render Props
+You will encounter all three concepts when learning React.
+
+They are different ways of sharing reusable logic.
+1. HOC
+HOC shares functionality by wrapping a component.
+const EnhancedComponent = withAuth(MyComponent);
+
+2. Custom Hooks
+Custom Hooks allow you to reuse stateful logic between components.
+
+Example:
+import { useState } from "react";
+
+function useCounter() {
+
+    const [count, setCount] = useState(0);
+
+    const increment = () => {
+
+        setCount(previous => previous + 1);
+
+    };
+
+    return {
+        count,
+        increment
+    };
+
+}
+
+Use it:
+function Counter() {
+
+    const { count, increment } = useCounter();
+
+    return (
+
+        <>
+            <h1>{count}</h1>
+
+            <button onClick={increment}>
+                Increase
+            </button>
+        </>
+
+    );
+
+}
+
+Another component can also use useCounter().
+
+Each component gets its own independent state.
+3. Render Props
+Render Props is another technique for sharing functionality.
+
+It involves passing a function as a prop that determines what should be rendered.
+
+Example:
+function Counter({ render }) {
+
+    const [count, setCount] = useState(0);
+
+    return render({
+        count,
+        increment: () => setCount(c => c + 1)
+    });
+
+}
+
+Usage:
+<Counter
+    render={({ count, increment }) => (
+
+        <>
+            <h1>{count}</h1>
+
+            <button onClick={increment}>
+                Increase
+            </button>
+        </>
+
+    )}
+/>
+
+Comparison
+Feature	HOC	Custom Hooks	Render Props
+Approach	Component wrapping	Logic reuse	Function as prop
+Reuses logic	Yes	Yes	Yes
+Adds component layer	Yes	No	Usually
+Uses Hooks	Can	Yes	Can
+Common in modern React	Less common	Very common	Less common
+
+
+My recommendation: Learn HOCs because they are important in React architecture and legacy codebases, but prefer Custom Hooks for most new reusable stateful logic.
+PART 7: Other Important Concepts Related to These Topics
+Now let's cover several concepts that connect everything we have discussed.
+1. Pure Functions
+A pure function is a function that:
+1. Always produces the same output for the same input.
+2. Does not cause side effects.
+Example:
+function addition(a, b) {
+
+    return a + b;
+
+}
+
+console.log(addition(10, 20));
+
+Every time you call:
+addition(10, 20);
+
+You get:
+30
+
+This is a pure function.
+Impure Function
+let total = 0;
+
+function addition(value) {
+
+    total += value;
+
+    return total;
+
+}
+
+This function modifies an external variable.
+
+Its output depends on previous executions.
+
+Therefore, it is impure.
+Pure Functions in React
+React components should ideally behave like pure functions of their props and state.
+
+Example:
+function Greeting({ name }) {
+
+    return <h1>Hello {name}</h1>;
+
+}
+
+Same props produce the same JSX output, assuming no external side effects.
+
+This makes components predictable.
+2. Referential Equality
+This concept is extremely important for understanding React rendering and performance.
+
+JavaScript compares objects and arrays by reference, not by their contents.
+
+Example:
+const user1 = {
+    name: "Haris"
+};
+
+const user2 = {
+    name: "Haris"
+};
+
+console.log(user1 === user2);
+
+Output:
+false
+
+Why?
+
+Because these are two different objects stored at different references.
+
+Now:
+const user1 = {
+    name: "Haris"
+};
+
+const user2 = user1;
+
+console.log(user1 === user2);
+
+Output:
+true
+
+Both variables reference the same object.
+Why Does React Care?
+React uses reference comparisons in several places.
+
+For example:
+- useState
+- useMemo
+- useCallback
+- React.memo
+Example:
+const user = {
+    name: "Haris"
+};
+
+If you create a new object every render, its reference changes.
+
+This can affect memoization and cause unnecessary work.
+
+That's why immutability and referential equality are closely connected.
+3. useCallback Hook
+Since you now understand callbacks, let's understand useCallback.
+
+useCallback is a React Hook that caches a function definition between renders until its dependencies change.
+
+Syntax:
+const cachedFunction = useCallback(
+    () => {
+        // Function logic
+    },
+    [dependencies]
+);
+
+Without useCallback
+function Parent() {
+
+    const [count, setCount] = useState(0);
+
+    const handleClick = () => {
+
+        console.log("Button clicked");
+
+    };
+
+    return (
+
+        <>
+            <button onClick={() => setCount(c => c + 1)}>
+                Increase Count
+            </button>
+
+            <Child onClick={handleClick} />
+
+        </>
+
+    );
+
+}
+
+Every time Parent renders, a new handleClick function is created.
+
+This might matter if Child is memoized.
+With useCallback
+import { useCallback, useState } from "react";
+
+function Parent() {
+
+    const [count, setCount] = useState(0);
+
+    const handleClick = useCallback(() => {
+
+        console.log("Button clicked");
+
+    }, []);
+
+    return (
+
+        <>
+            <button onClick={() => setCount(c => c + 1)}>
+                Increase Count
+            </button>
+
+            <Child onClick={handleClick} />
+
+        </>
+
+    );
+
+}
+
+Now React can reuse the same function reference while dependencies remain unchanged.
+Important: useCallback vs Callback
+Callback	useCallback
+A function passed to another function	React Hook
+JavaScript concept	React concept
+Used for events and asynchronous operations	Used to cache function definitions
+Doesn't automatically cache a function	Preserves function identity between renders
+
+
+Also remember:
+
+useCallback does not prevent a function from executing. It preserves its reference.
+4. useMemo Hook
+useMemo is another important React Hook.
+
+It caches the result of a calculation between renders until its dependencies change.
+
+Example:
+const expensiveValue = useMemo(() => {
+
+    return calculateExpensiveValue(number);
+
+}, [number]);
+
+useMemo vs useCallback
+This is a common interview question.
+useMemo	useCallback
+Caches a calculated value	Caches a function definition
+Returns a value	Returns a function
+Used for expensive calculations	Used when function identity matters
+
+
+Conceptually:
+useCallback(fn, dependencies);
+
+is similar to:
+useMemo(() => fn, dependencies);
+
+Both are performance optimization tools. They should be used when there is a reason, not everywhere.
+5. React.memo
+React.memo is a Higher-Order Component provided by React.
+
+It can prevent a component from re-rendering when its props are unchanged according to its comparison.
+
+Example:
+import { memo } from "react";
+
+const Child = memo(function Child({ name }) {
+
+    console.log("Child rendered");
+
+    return <h1>Hello {name}</h1>;
+
+});
+
+export default Child;
+
+Now:
+function Parent() {
+
+    const [count, setCount] = useState(0);
+
+    return (
+
+        <>
+            <button onClick={() => setCount(c => c + 1)}>
+                Increase
+            </button>
+
+            <Child name="Haris" />
+
+        </>
+
+    );
+
+}
+
+When Parent updates its count, Child can skip re-rendering because its name prop remains unchanged.
+
+Remember:
+
+React.memo is a performance optimization, not a guarantee that a component will never render again.
+
+Also, if you pass a new object or function reference every time, the props may be considered changed.
+6. Lexical Scope vs Closure
+These two concepts are related but different.
+Lexical Scope	Closure
+Determines variable accessibility based on where functions are defined	Retains access to surrounding lexical variables
+A JavaScript scoping rule	A behavior resulting from lexical scoping
+Exists when code is written	Becomes relevant when a function retains access to its environment
+
+
+Example:
+function outer() {
+
+    let name = "Haris";
+
+    function inner() {
+
+        console.log(name);
+
+    }
+
+    return inner;
+
+}
+
+Lexical scoping allows inner() to access name.
+
+The returned inner() function retains that access through a closure.
+7. Event Loop, Call Stack and Callback Queue
+This concept is closely related to asynchronous callbacks.
+
+Consider:
+console.log("First");
+
+setTimeout(() => {
+
+    console.log("Second");
+
+}, 0);
+
+console.log("Third");
+
+Output:
+First
+Third
+Second
+
+Why?
+
+JavaScript uses an execution model involving:
+
+Call Stack: Executes synchronous JavaScript code.
+
+Web APIs / Runtime APIs: Handle operations such as timers and browser events.
+
+Task Queue: Holds callbacks such as timer callbacks when they become ready.
+
+Microtask Queue: Holds Promise reactions and other microtasks.
+
+Event Loop: Coordinates when queued work can execute.
+
+For example:
+console.log("Start");
+
+setTimeout(() => {
+
+    console.log("Timeout");
+
+}, 0);
+
+Promise.resolve().then(() => {
+
+    console.log("Promise");
+
+});
+
+console.log("End");
+
+Output:
+Start
+End
+Promise
+Timeout
+
+Why?
+
+After synchronous code finishes, JavaScript processes microtasks before moving to the next task.
+
+This is why Promise callbacks generally execute before timer callbacks.
+8. Currying
+Currying is another concept related to Higher-Order Functions.
+
+It means converting a function that takes multiple arguments into a sequence of functions that each take one argument.
+Normal Function
+function addition(a, b, c) {
+
+    return a + b + c;
+
+}
+
+console.log(addition(10, 20, 30));
+
+Curried Function
+function addition(a) {
+
+    return function(b) {
+
+        return function(c) {
+
+            return a + b + c;
+
+        };
+
+    };
+
+}
+
+console.log(addition(10)(20)(30));
+
+Output:
+60
+
+Why is this useful?
+
+It allows you to create reusable functions with partially supplied arguments.
+
+Currying is closely related to closures because each returned function remembers the arguments from its outer function.
+9. Function Composition
+Function composition means combining multiple functions to create a new function.
+
+Example:
+const double = number => number * 2;
+
+const addTen = number => number + 10;
+
+const result = addTen(double(5));
+
+console.log(result);
+
+Output:
+20
+
+Execution:
+5
+ |
+double(5)
+ |
+10
+ |
+addTen(10)
+ |
+20
+
+This programming style is common in functional programming.
+10. Side Effects
+A side effect occurs when a function does something beyond calculating and returning a value.
+
+Examples:
+- API requests
+- Updating the DOM
+- Changing global variables
+- Writing to local storage
+- Setting timers
+- Logging to the console
+React provides useEffect for synchronizing components with external systems.
+
+Example:
+import { useEffect } from "react";
+
+function App() {
+
+    useEffect(() => {
+
+        console.log("Component mounted");
+
+    }, []);
+
+    return <h1>Hello React</h1>;
+
+}
+
+Here, logging is a side effect.
+
+Another example:
+useEffect(() => {
+
+    document.title = "My React Application";
+
+}, []);
+
+The effect synchronizes the browser document title with the component.
+PART 8: How All These Concepts Are Connected
+This is probably the most important section because understanding individual definitions is not enough.
+
+You should understand how they work together in real applications.
+
+Consider this example:
+import { useCallback, useState, memo } from "react";
+
+const Child = memo(function Child({ onIncrease }) {
+
+    console.log("Child rendered");
+
+    return (
+
+        <button onClick={onIncrease}>
+            Increase Count
+        </button>
+
+    );
+
+});
+
+function Parent() {
+
+    const [count, setCount] = useState(0);
+
+    const handleIncrease = useCallback(() => {
+
+        setCount(previousCount => previousCount + 1);
+
+    }, []);
+
+    return (
+
+        <>
+
+            <h1>Count: {count}</h1>
+
+            <Child onIncrease={handleIncrease} />
+
+        </>
+
+    );
+
+}
+
+export default Parent;
+
+Let's identify the concepts.
+Code	Concept
+useState()	React state management
+setCount()	State update
+previousCount => previousCount + 1	Callback function
+useCallback()	Function memoization
+memo()	Higher-Order Component
+onIncrease	Callback prop
+handleIncrease	Closure over its lexical environment
+State updater	Immutable state update
+
+
+Notice how many concepts work together in a small component.
+
+This is why understanding JavaScript fundamentals is so important before going deeper into React and Next.js.
+PART 9: Important Concepts to Learn Next
+Here is a learning roadmap of related concepts.
+Concept	What You Should Understand	Importance
+Scope	Global, function and block scope	Essential
+Lexical Scoping	How JavaScript resolves variables	Essential
+Closures	Functions remembering outer variables	Essential
+Callbacks	Passing functions as arguments	Essential
+Higher-Order Functions	Functions accepting or returning functions	Essential
+Higher-Order Components	Reusing React component logic	Important
+Pure Functions	Predictable function behavior	Essential
+Immutability	Avoiding direct state mutation	Essential
+Shallow vs Deep Copy	Understanding object references	Essential
+Referential Equality	Comparing objects and functions	Essential
+Currying	Transforming function arguments	Intermediate
+Function Composition	Combining multiple functions	Intermediate
+Memoization	Caching calculation results	Important
+Event Loop	Understanding asynchronous execution	Essential
+Promises	Handling asynchronous operations	Essential
+Async/Await	Writing asynchronous code	Essential
+Debouncing	Delaying execution until activity stops	Important
+Throttling	Limiting execution frequency	Important
+Recursion	A function calling itself	Intermediate
+Destructuring	Extracting object and array values	Essential
+Spread/Rest Operators	Copying and collecting values	Essential
+
+
+Which concepts are most important for React and Next.js?
+I would prioritize these:
+
+JavaScript fundamentals:
+1. Scope and lexical scoping.
+2. Closures.
+3. Callbacks.
+4. Higher-order functions.
+5. Promises and async/await.
+6. Event loop.
+7. Immutability.
+8. Spread and rest operators.
+9. Destructuring.
+10. Modules (import/export).
+React concepts:
+1. Component composition.
+2. Props and state.
+3. Rendering and re-rendering.
+4. Hooks.
+5. Custom Hooks.
+6. useEffect and cleanup.
+7. useCallback and useMemo.
+8. React.memo.
+9. Context API.
+10. HOCs and Render Props.
+Next.js concepts:
+1. Server Components.
+2. Client Components.
+3. Server-side rendering.
+4. Hydration.
+5. Server Actions.
+6. Data fetching and caching.
+7. Routing and layouts.
+8. Middleware and authentication.
+PART 10: Quick Revision Cheat Sheet
+Keep this table as your future reference.
+Term	Simple Definition
+Mutable	Data that can be changed after creation
+Immutable	Data that is not modified directly; changes produce new values
+Closure	Function retaining access to its outer lexical environment
+Callback	Function passed to another function
+HOF	Function that accepts or returns another function
+HOC	Function that takes a React component and returns an enhanced component
+Pure Function	Same input produces same output without side effects
+Lexical Scope	Variable accessibility determined by where code is written
+Stale Closure	Function using outdated values captured from an earlier render
+Referential Equality	Comparing whether two values reference the same object
+Shallow Copy	Copies top-level properties but shares nested references
+Deep Copy	Creates independent copies of nested data
+Memoization	Caching the result of a calculation
+useCallback	Caches a function definition
+useMemo	Caches a calculated value
+React.memo	HOC that can skip rendering when props are unchanged
+Currying	Converting a multi-argument function into nested single-argument functions
+Function Composition	Combining multiple functions into one operation
+Side Effect	An operation that interacts with something outside its returned value
+Event Loop	Coordinates execution of queued asynchronous callbacks
+
+
+My advice: Don't just memorize these definitions. Write the examples in your VS Code, run them, modify them and observe the output. In particular, experiment with closures, object references, immutable state updates and stale closures. These four areas will make many advanced React concepts much easier to understand.
+
+============================================================================================================================
+
+Second Prompt:
+JavaScript Closures, Promises, Async and Await – Complete Beginner's Guide
+These are some of the most important concepts in modern JavaScript. If you understand them properly, you will find it much easier to work with:
+- React.js and Next.js
+- Node.js and Express.js
+- API requests using Fetch and Axios
+- Database operations
+- Authentication and login systems
+- File uploads
+- Background operations
+- Real-world asynchronous applications
+Since you're learning React and Next.js and already have experience with PHP and Laravel, I'll also compare JavaScript concepts with PHP/Laravel wherever useful.
+
+Let's start from scratch.
+Part 1: Understanding JavaScript execution
+Before learning closures, promises, and async/await, you need to understand how JavaScript executes code.
+1. What is synchronous JavaScript?
+Synchronous means JavaScript executes code one statement at a time, in order.
+
+The next statement generally waits until the current statement finishes.
+
+Example:
+console.log("First");
+
+console.log("Second");
+
+console.log("Third");
+
+
+Output:
+First
+Second
+Third
+
+
+JavaScript executes:
+1. Print First.
+2. Print Second.
+3. Print Third.
+This is called synchronous execution.
+
+Think of a restaurant with one worker who handles one order at a time. The worker completes the first order before starting the second.
+2. What is asynchronous JavaScript?
+Asynchronous means JavaScript can start an operation that takes time and continue executing other available code instead of waiting for that operation to finish.
+
+For example:
+console.log("First");
+
+setTimeout(() => {
+    console.log("Second");
+}, 2000);
+
+console.log("Third");
+
+
+Output:
+First
+Third
+Second
+
+
+Why?
+
+Let's understand step by step:
+1. JavaScript prints First.
+2. JavaScript encounters setTimeout().
+3. It schedules the callback to run after approximately 2 seconds.
+4. JavaScript does not wait for those 2 seconds.
+5. It prints Third.
+6. After the timer expires, the callback becomes eligible to execute.
+7. JavaScript eventually executes the callback and prints Second.
+Execution timeline
+1. 0 seconds – First
+   
+   JavaScript executes the first console.log.
+2. 0 seconds – setTimeout
+   
+   Timer is registered. JavaScript continues.
+3. 0 seconds – Third
+   
+   The next synchronous statement executes.
+4. Approximately 2 seconds – Second
+   
+   The timer callback executes when the event loop can process it.
+
+This is asynchronous programming.
+
+Important: JavaScript itself normally executes your JavaScript code on one main thread. It uses the browser or Node.js runtime facilities and the event loop to coordinate asynchronous operations.
+3. Why do we need asynchronous JavaScript?
+Imagine you're building an e-commerce website.
+
+A customer opens the product page.
+
+Your application needs to:
+- Fetch products from the database.
+- Fetch product categories.
+- Load product images.
+- Check the user's login status.
+- Fetch cart information.
+Some operations take time because they involve network requests, databases, or file operations.
+
+If JavaScript blocked the main thread while waiting for every operation, the application could become unresponsive.
+
+Asynchronous programming helps JavaScript continue other work while waiting for these operations.
+
+For example:
+console.log("Page started");
+
+fetch("/api/products")
+    .then(response => response.json())
+    .then(products => {
+        console.log(products);
+    });
+
+console.log("Page finished loading");
+
+
+The API request starts, but JavaScript can execute the last console.log without waiting for the API response.
+
+Part 2: JavaScript Closure
+1. What is a closure?
+A closure is a JavaScript feature where an inner function remembers and can access variables from its outer function, even after the outer function has finished executing.
+
+Let's break that definition into simple parts.
+- Outer function: A function inside which another function is created.
+- Inner function: A function created inside another function.
+- Closure: The inner function retains access to the outer function's variables.
+2. First understand function scope
+Consider this example:
+function outerFunction() {
+
+    let name = "Haris";
+
+    function innerFunction() {
+
+        console.log(name);
+
+    }
+
+    innerFunction();
+}
+
+outerFunction();
+
+
+Output:
+Haris
+
+
+Why?
+
+Because innerFunction() is inside outerFunction().
+
+Therefore, it can access the name variable declared in its parent function.
+
+This is called lexical scoping.
+What is lexical scope?
+Lexical scope means JavaScript determines which variables a function can access based on where that function is written in the source code.
+
+For example:
+let country = "Pakistan";
+
+function outer() {
+
+    let city = "Wah Cantt";
+
+    function inner() {
+
+        let street = "Main Road";
+
+        console.log(country);
+        console.log(city);
+        console.log(street);
+    }
+
+    inner();
+}
+
+outer();
+
+
+Output:
+Pakistan
+Wah Cantt
+Main Road
+
+
+The inner function can access:
+1. Its own variables.
+2. Variables from its parent function.
+3. Variables from the global scope.
+This is the scope chain.
+3. Now understand the actual closure
+Look at this example:
+function outerFunction() {
+
+    let count = 0;
+
+    function innerFunction() {
+
+        count++;
+
+        console.log(count);
+
+    }
+
+    return innerFunction;
+}
+
+const result = outerFunction();
+
+result();
+result();
+result();
+
+
+Output:
+1
+2
+3
+
+
+This is a closure.
+
+But why?
+
+Let's understand every step.
+
+Step 1:
+function outerFunction() {
+    let count = 0;
+}
+
+
+We create an outer function with a variable named count.
+
+Initially:
+count = 0
+
+
+Step 2:
+function innerFunction() {
+    count++;
+    console.log(count);
+}
+
+
+The inner function accesses the count variable from the outer function.
+
+Step 3:
+return innerFunction;
+
+
+We return the inner function instead of executing it.
+
+Step 4:
+const result = outerFunction();
+
+
+Now the outer function executes and returns the inner function.
+
+Normally, you might expect its local variables to disappear after the outer function finishes.
+
+But here is the important part:
+
+JavaScript keeps the necessary lexical environment accessible because the returned inner function still references count.
+
+Step 5:
+result();
+result();
+result();
+
+
+Every time you execute result(), the same remembered count variable is updated.
+How closure remembers variables
+outerFunction()
+count = 0
+Outer function creates the variable
+
+Returns innerFunction
+
+innerFunction()
+
+Remembers count
+
+Call 1 → count = 1
+
+Call 2 → count = 2
+
+Call 3 → count = 3
+
+
+4. Practical example: Private variables
+One of the most useful applications of closures is creating private variables.
+
+For example:
+function createBankAccount() {
+
+    let balance = 1000;
+
+    return {
+
+        deposit(amount) {
+            balance += amount;
+            console.log("Balance:", balance);
+        },
+
+        withdraw(amount) {
+
+            if (amount > balance) {
+                console.log("Insufficient balance");
+                return;
+            }
+
+            balance -= amount;
+
+            console.log("Balance:", balance);
+        },
+
+        getBalance() {
+            return balance;
+        }
+
+    };
+}
+
+const account = createBankAccount();
+
+account.deposit(500);
+
+account.withdraw(200);
+
+console.log(account.getBalance());
+
+
+Output:
+Balance: 1500
+Balance: 1300
+1300
+
+
+Notice something important:
+console.log(account.balance);
+
+
+Output:
+undefined
+
+
+Why?
+
+Because balance is not directly exposed outside the function.
+
+Only the returned methods can access it.
+
+This is a practical example of data encapsulation using closures.
+5. Where are closures used in React?
+Closures are extremely important in React.
+
+Consider:
+import { useState } from "react";
+
+function Counter() {
+
+    const [count, setCount] = useState(0);
+
+    function handleClick() {
+
+        console.log(count);
+
+    }
+
+    return (
+        <button onClick={handleClick}>
+            Count: {count}
+        </button>
+    );
+}
+
+
+Here, handleClick remembers the count variable from the render in which that function was created.
+
+This is related to closures.
+A common React closure problem: Stale closures
+import { useState } from "react";
+
+function Counter() {
+
+    const [count, setCount] = useState(0);
+
+    function handleClick() {
+
+        setTimeout(() => {
+            console.log(count);
+        }, 3000);
+
+    }
+
+    return (
+        <button onClick={handleClick}>
+            Count: {count}
+        </button>
+    );
+}
+
+
+Suppose:
+1. Current count is 0.
+2. You click the button.
+3. A timer starts.
+4. You increase count to 5.
+5. The timer executes.
+The console may still show:
+0
+
+
+Why?
+
+Because the callback created during the earlier render remembers that render's count value.
+
+This is called a stale closure.
+
+You will encounter this concept when learning React hooks such as useEffect, useCallback, and useMemo.
+6. More real-world uses of closures
+Use case	How closure helps
+Private variables	Protects internal data
+Event handlers	Remembers variables
+React hooks	Maintains access to render-specific values
+Callbacks	Remembers surrounding scope
+Function factories	Creates customized functions
+Debouncing	Remembers timer-related state
+Currying	Creates functions with preset arguments
+
+Closure summary
+Remember this:
+
+Closure = Function + Remembered lexical environment.
+
+It allows an inner function to access variables from its outer scope even after the outer function has finished.
+
+Part 3: JavaScript Promises
+1. Why were Promises introduced?
+Before Promises, JavaScript developers commonly handled asynchronous operations using callbacks.
+
+For example:
+function getUser(callback) {
+
+    setTimeout(() => {
+
+        const user = {
+            id: 1,
+            name: "Haris"
+        };
+
+        callback(user);
+
+    }, 2000);
+
+}
+
+getUser(function(user) {
+
+    console.log(user);
+
+});
+
+
+This works.
+
+But imagine your application requires multiple operations:
+1. Get user.
+2. Get user's orders.
+3. Get order details.
+4. Get payment information.
+Using nested callbacks can become difficult to read and maintain.
+
+This problem is commonly called callback hell.
+
+Example:
+getUser(function(user) {
+
+    getOrders(user.id, function(orders) {
+
+        getOrderDetails(orders[0].id, function(details) {
+
+            getPayment(details.paymentId, function(payment) {
+
+                console.log(payment);
+
+            });
+
+        });
+
+    });
+
+});
+
+
+This is one reason Promises became an important part of JavaScript.
+2. What is a Promise?
+A Promise is a JavaScript object that represents the eventual result of an asynchronous operation.
+
+In simple words:
+
+A Promise says:
+
+"I have started an operation. I don't have the result yet, but I will provide the result later, or tell you if something went wrong."
+
+For example:
+- Fetching API data.
+- Reading a file.
+- Uploading an image.
+- Saving information to a database.
+- Sending an email.
+3. Three states of a Promise
+Every Promise has three possible states:
+1. Pending
+Waiting
+
+The operation has started, but it has not completed yet.Promise created → Waiting for response
+
+
+2. Fulfilled
+Success
+
+The operation completed successfully and produced a result.Promise → Resolved successfully
+
+
+3. Rejected
+Failed
+
+The operation failed and produced a rejection reason.Promise → Rejected with an error
+
+
+Important: Fulfilled and rejected Promises are both called settled Promises.
+
+A settled Promise cannot change its state again.
+4. How to create a Promise?
+JavaScript provides a built-in Promise constructor.
+
+Syntax:
+const myPromise = new Promise((resolve, reject) => {
+
+    // Asynchronous operation
+
+});
+
+
+There are two important functions:
+- resolve() – marks the Promise as fulfilled.
+- reject() – marks the Promise as rejected.
+Example:
+const myPromise = new Promise((resolve, reject) => {
+
+    let success = true;
+
+    if (success) {
+
+        resolve("Operation successful");
+
+    } else {
+
+        reject("Operation failed");
+
+    }
+
+});
+
+
+Here, the Promise is immediately fulfilled because success is true.
+
+If success were false, it would be rejected.
+5. How to consume a Promise?
+We use three important methods:
+- .then()
+- .catch()
+- .finally()
+A. then()
+Runs when the Promise is fulfilled.
+myPromise.then((result) => {
+
+    console.log(result);
+
+});
+
+
+Output:
+Operation successful
+
+
+The result contains the value passed to resolve().
+B. catch()
+Runs when the Promise is rejected.
+myPromise.catch((error) => {
+
+    console.log(error);
+
+});
+
+
+If the Promise is rejected, output:
+Operation failed
+
+
+C. finally()
+Runs after the Promise settles, regardless of whether it succeeds or fails.
+myPromise.finally(() => {
+
+    console.log("Operation completed");
+
+});
+
+
+This is useful for hiding loaders or cleaning up resources.
+6. Complete Promise example
+Let's build a more practical example.
+const paymentPromise = new Promise((resolve, reject) => {
+
+    let paymentSuccess = true;
+
+    setTimeout(() => {
+
+        if (paymentSuccess) {
+
+            resolve("Payment successful!");
+
+        } else {
+
+            reject("Payment failed!");
+
+        }
+
+    }, 3000);
+
+});
+
+paymentPromise
+    .then((result) => {
+
+        console.log(result);
+
+    })
+    .catch((error) => {
+
+        console.log(error);
+
+    })
+    .finally(() => {
+
+        console.log("Payment process finished");
+
+    });
+
+
+If payment succeeds:
+Payment successful!
+Payment process finished
+
+
+If payment fails:
+Payment failed!
+Payment process finished
+
+
+The Promise initially remains pending while the timer runs.
+7. Promise chaining
+One of the most powerful features of Promises is chaining.
+
+Example:
+Promise.resolve(10)
+
+    .then((number) => {
+
+        console.log(number);
+
+        return number * 2;
+
+    })
+
+    .then((number) => {
+
+        console.log(number);
+
+        return number + 5;
+
+    })
+
+    .then((number) => {
+
+        console.log(number);
+
+    });
+
+
+Output:
+10
+20
+25
+
+
+How does it work?
+1. First .then() receives 10.
+2. It returns 20.
+3. The second .then() receives 20.
+4. It returns 25.
+5. The third .then() receives 25.
+Each .then() returns a new Promise, which allows you to chain operations.
+8. Promise.all()
+Suppose your e-commerce website needs three API requests:
+- Products
+- Categories
+- User profile
+You can execute them concurrently using Promise.all().
+const productsPromise = fetch("/api/products");
+
+const categoriesPromise = fetch("/api/categories");
+
+const userPromise = fetch("/api/user");
+
+Promise.all([
+    productsPromise,
+    categoriesPromise,
+    userPromise
+])
+.then((results) => {
+
+    console.log(results);
+
+})
+.catch((error) => {
+
+    console.log(error);
+
+});
+
+
+Important characteristics:
+- All three operations are started without waiting for one another.
+- Promise.all() fulfills when all input Promises fulfill.
+- If any input Promise rejects, the aggregate Promise rejects.
+- It preserves the original order of results.
+9. Other important Promise methods
+Method	Purpose
+Promise.all()	Waits for all to fulfill; rejects if one rejects
+Promise.allSettled()	Waits for all to settle
+Promise.race()	Settles with the first settled Promise
+Promise.any()	Fulfills with the first fulfilled Promise; rejects if all reject
+Promise.resolve()	Creates an already-fulfilled Promise
+Promise.reject()	Creates an already-rejected Promise
+
+Example of Promise.allSettled():
+const tasks = [
+    Promise.resolve("Task 1 success"),
+    Promise.reject("Task 2 failed"),
+    Promise.resolve("Task 3 success")
+];
+
+Promise.allSettled(tasks).then((results) => {
+
+    console.log(results);
+
+});
+
+
+It returns the status and value or reason for every Promise.
+
+Part 4: Async and Await
+Now we have reached the most important part of this tutorial.
+
+You will use async and await frequently in React, Next.js, and Node.js.
+
+Before understanding them, remember:
+- Promise is used to represent an asynchronous result.
+- .then() is used to handle a successful Promise.
+- .catch() is used to handle a rejected Promise.
+- async/await provides a cleaner way to work with Promises.
+1. What is async?
+async is a keyword used before a function declaration to make that function return a Promise.
+
+Example:
+async function greet() {
+
+    return "Hello Haris";
+
+}
+
+const result = greet();
+
+console.log(result);
+
+
+You might expect:
+Hello Haris
+
+
+But the output is actually a Promise:
+Promise {<fulfilled>: "Hello Haris"}
+
+
+Why?
+
+Because every async function returns a Promise.
+
+Even if you return a normal string, JavaScript automatically wraps that value in a fulfilled Promise.
+
+These two functions are effectively equivalent:
+function greet() {
+
+    return Promise.resolve("Hello Haris");
+
+}
+
+
+async function greet() {
+
+    return "Hello Haris";
+
+}
+
+
+Both return a Promise.
+What if an async function throws an error?
+async function getData() {
+
+    throw new Error("Something went wrong");
+
+}
+
+
+This function returns a rejected Promise rather than throwing a synchronous error directly to its caller.
+
+You can handle it using .catch():
+getData()
+    .catch(error => {
+        console.log(error.message);
+    });
+
+
+2. What is await?
+await is a keyword used inside an async function (or at the top level of supported JavaScript modules).
+
+It tells JavaScript:
+
+"Wait for this Promise to settle before continuing the execution of this async function."
+
+Example:
+async function getUser() {
+
+    console.log("First");
+
+    const promise = new Promise((resolve) => {
+
+        setTimeout(() => {
+
+            resolve("User data received");
+
+        }, 3000);
+
+    });
+
+    const result = await promise;
+
+    console.log(result);
+
+    console.log("Third");
+
+}
+
+getUser();
+
+
+Output:
+First
+
+(3 seconds later)
+
+User data received
+
+Third
+
+
+Let's understand exactly what happened.
+1. getUser() starts executing.
+2. JavaScript prints First.
+3. A Promise is created.
+4. JavaScript encounters await promise.
+5. The Promise is still pending.
+6. The remaining execution of getUser() is suspended.
+7. JavaScript can execute other available code.
+8. After approximately three seconds, the Promise fulfills.
+9. The async function resumes.
+10. JavaScript assigns the result to result.
+11. It prints User data received.
+12. It prints Third.
+This is the most important thing to understand about await.
+3. Your main question: Does await stop JavaScript?
+You asked:
+
+"When I use async and await, does the compiler wait, meaning stop on that line, or perform the next steps and when the response comes, show it?"
+
+The answer:
+
+Await suspends the execution of the current async function, not the entire JavaScript application or main thread.
+
+Let's understand with a practical example.
+async function fetchProducts() {
+
+    console.log("1. Start fetching products");
+
+    const response = await fetch("/api/products");
+
+    console.log("2. Products received");
+
+}
+
+console.log("A. Application started");
+
+fetchProducts();
+
+console.log("B. Other code executed");
+
+
+Possible output:
+A. Application started
+
+1. Start fetching products
+
+B. Other code executed
+
+2. Products received
+
+
+Why does this happen?
+
+When JavaScript encounters:
+const response = await fetch("/api/products");
+
+
+It does not block the whole application while waiting for the API.
+
+Instead:
+- The HTTP request is started.
+- The async function pauses at await.
+- JavaScript returns to its surrounding execution.
+- Other available synchronous code executes.
+- When the request finishes, the async function resumes.
+What happens when JavaScript encounters await?
+JavaScript starts async function
+
+
+Encounters await
+
+Starts/observes the Promise
+
+
+Async function
+Suspended
+Waits for the Promise to settle.
+
+
+JavaScript
+Continues
+Executes other available code.
+
+
+
+
+Promise settles
+
+Async function resumes
+
+
+Remaining statements execute
+
+
+Important distinction
+Consider these three statements:
+Situation	What happens?
+Normal synchronous code	Executes sequentially and blocks further JS execution until finished
+await inside an async function	Suspends that async function
+Blocking operation such as a long CPU-intensive loop	Blocks the JavaScript thread while it runs
+
+So, await does not mean the entire browser or Node.js application stops.
+
+It only pauses the current async function.
+4. Async/Await with a real API request
+Let's build a realistic example.
+
+Suppose you have a Laravel backend API:
+GET https://example.com/api/products
+
+
+You want to retrieve products from your React application.
+
+Using Promises with .then():
+function getProducts() {
+
+    fetch("https://example.com/api/products")
+
+        .then((response) => {
+
+            return response.json();
+
+        })
+
+        .then((products) => {
+
+            console.log(products);
+
+        })
+
+        .catch((error) => {
+
+            console.log(error);
+
+        });
+
+}
+
+getProducts();
+
+
+Now the same thing using async/await:
+async function getProducts() {
+
+    try {
+
+        const response = await fetch(
+            "https://example.com/api/products"
+        );
+
+        const products = await response.json();
+
+        console.log(products);
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+getProducts();
+
+
+Both approaches work with Promises.
+
+But async/await makes the code look more like normal synchronous code.
+Understand each line
+First:
+const response = await fetch(url);
+
+
+fetch() returns a Promise.
+
+await waits for the HTTP response to become available.
+
+Second:
+const products = await response.json();
+
+
+response.json() also returns a Promise.
+
+It reads and parses the response body as JSON.
+
+Third:
+console.log(products);
+
+
+Now the parsed product data is available.
+
+Fourth:
+catch(error)
+
+
+If an awaited Promise rejects, the error can be handled in the catch block.
+Important: fetch does not automatically throw for HTTP errors
+For example, a server can return HTTP 404 or 500.
+
+The fetch() Promise usually still fulfills with a Response object.
+
+Therefore, you should check response.ok:
+async function getProducts() {
+
+    try {
+
+        const response = await fetch(
+            "https://example.com/api/products"
+        );
+
+        if (!response.ok) {
+
+            throw new Error("Failed to fetch products");
+
+        }
+
+        const products = await response.json();
+
+        console.log(products);
+
+    } catch (error) {
+
+        console.log(error.message);
+
+    }
+
+}
+
+getProducts();
+
+
+This is a better real-world approach.
+5. Async/Await with setTimeout
+Let's create another example to understand execution order.
+function delay(ms) {
+
+    return new Promise((resolve) => {
+
+        setTimeout(resolve, ms);
+
+    });
+
+}
+
+async function processData() {
+
+    console.log("Step 1");
+
+    await delay(3000);
+
+    console.log("Step 2");
+
+    await delay(2000);
+
+    console.log("Step 3");
+
+}
+
+processData();
+
+console.log("Step 4");
+
+
+Output:
+Step 1
+Step 4
+
+(3 seconds later)
+
+Step 2
+
+(2 seconds later)
+
+Step 3
+
+
+Total time for the two delays is approximately five seconds.
+
+Notice:
+- Step 1 executes immediately.
+- Step 4 executes while processData() is suspended.
+- Step 2 executes after three seconds.
+- Step 3 executes after another two seconds.
+This demonstrates how await suspends only the current async function.
+6. What if I use multiple await statements?
+Consider:
+async function getData() {
+
+    const user = await getUser();
+
+    const orders = await getOrders(user.id);
+
+    const payments = await getPayments(user.id);
+
+    console.log(user, orders, payments);
+
+}
+
+
+Here, the operations are sequential.
+
+Execution:
+getUser()
+
+Wait for result
+
+getOrders(user.id)
+
+Wait for result
+
+getPayments(user.id)
+
+
+Display all data
+
+
+Why sequential?
+
+Because each operation depends on the previous result.
+
+You cannot get the user's orders until you know the user ID.
+What if operations do not depend on each other?
+Suppose you need:
+- Products
+- Categories
+- Banners
+These three API requests are independent.
+
+You don't need to wait for each one individually.
+
+Instead of:
+async function loadData() {
+
+    const products = await getProducts();
+
+    const categories = await getCategories();
+
+    const banners = await getBanners();
+
+}
+
+
+Use Promise.all():
+async function loadData() {
+
+    const [
+        products,
+        categories,
+        banners
+    ] = await Promise.all([
+
+        getProducts(),
+
+        getCategories(),
+
+        getBanners()
+
+    ]);
+
+    console.log(products);
+
+    console.log(categories);
+
+    console.log(banners);
+
+}
+
+
+Now all three operations can run concurrently.
+
+This is an important performance optimization.
+
+Part 5: How Promises, Async and Await work together
+You should understand the relationship between these three concepts.
+Promise
+
+Represents the future result of an asynchronous operation.
+
+
+.then() / .catch()
+
+Handle Promise results using callbacks.
+
+
+async / await
+
+Handle Promise results with cleaner syntax.
+
+
+
+
+Compare:
+
+Promise syntax:
+function getUser() {
+
+    return fetch("/api/user")
+
+        .then(response => response.json())
+
+        .then(user => {
+
+            console.log(user);
+
+        })
+
+        .catch(error => {
+
+            console.log(error);
+
+        });
+
+}
+
+
+Async/await syntax:
+async function getUser() {
+
+    try {
+
+        const response = await fetch("/api/user");
+
+        const user = await response.json();
+
+        console.log(user);
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+
+Both use Promises internally.
+
+Async/await is not a replacement for Promises. It is syntax built on top of Promises.
+
+Part 6: Event Loop, Call Stack and Microtask Queue
+This is another important topic connected to Promises and async/await.
+
+If you understand this, you will understand why JavaScript executes asynchronous code in a particular order.
+1. What is the Call Stack?
+The call stack is where JavaScript keeps track of currently executing function calls.
+
+Example:
+function first() {
+
+    second();
+
+}
+
+function second() {
+
+    console.log("Hello");
+
+}
+
+first();
+
+
+Execution:
+1. first() enters the call stack.
+2. second() enters the call stack.
+3. console.log() executes.
+4. second() finishes.
+5. first() finishes.
+The stack works on a Last In, First Out (LIFO) basis.
+2. What is the Event Loop?
+The event loop coordinates when asynchronous callbacks and Promise handlers can execute.
+
+It checks whether the call stack is available and processes queued work according to JavaScript's scheduling rules.
+3. What is the Microtask Queue?
+Promise callbacks, such as .then(), .catch(), and .finally(), are scheduled as microtasks.
+
+The continuation after an await is also scheduled as a microtask when the awaited Promise settles.
+4. What is the Task Queue (Macrotask Queue)?
+Timers such as setTimeout() and many event callbacks are scheduled as tasks.
+
+Let's understand with a practical example:
+console.log("1");
+
+setTimeout(() => {
+
+    console.log("2");
+
+}, 0);
+
+Promise.resolve().then(() => {
+
+    console.log("3");
+
+});
+
+console.log("4");
+
+
+Output:
+1
+4
+3
+2
+
+
+Why?
+1. console.log("1") executes.
+2. setTimeout() schedules a task.
+3. Promise .then() schedules a microtask.
+4. console.log("4") executes.
+5. The synchronous call stack becomes empty.
+6. The microtask queue is processed.
+7. console.log("3") executes.
+8. The timer task becomes eligible and executes.
+9. console.log("2") executes.
+Simplified JavaScript execution model
+Call Stack
+
+Executes synchronous JavaScript
+
+
+When the stack is empty
+Microtask Queue
+
+Promise callbacks and await continuations
+
+Task Queue
+
+Timer callbacks and other scheduled tasks
+
+
+Simplified view: after a task, the event loop drains the microtask queue before proceeding to another task.
+
+Remember this priority: Synchronous JavaScript runs first, then microtasks, then the next task.
+
+Part 7: Error handling with Async/Await
+Whenever you work with APIs, databases, or file uploads, errors can happen.
+
+For example:
+- Server is unavailable.
+- Internet connection fails.
+- API returns an error.
+- Database connection fails.
+- Invalid data is submitted.
+JavaScript provides try, catch, and finally for error handling.
+1. try and catch
+async function getUser() {
+
+    try {
+
+        const response = await fetch("/api/user");
+
+        if (!response.ok) {
+            throw new Error("Unable to fetch user");
+        }
+
+        const user = await response.json();
+
+        console.log(user);
+
+    } catch (error) {
+
+        console.log("Error:", error.message);
+
+    }
+
+}
+
+
+If an awaited Promise rejects, execution jumps to the catch block.
+2. finally
+The finally block executes whether the operation succeeds or fails.
+async function getProducts() {
+
+    try {
+
+        console.log("Loading...");
+
+        const response = await fetch("/api/products");
+
+        if (!response.ok) {
+            throw new Error("API request failed");
+        }
+
+        const products = await response.json();
+
+        console.log(products);
+
+    } catch (error) {
+
+        console.log(error.message);
+
+    } finally {
+
+        console.log("Request completed");
+
+    }
+
+}
+
+
+A real-world React example:
+import { useState } from "react";
+
+function Products() {
+
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    async function getProducts() {
+
+        try {
+
+            setLoading(true);
+            setError("");
+
+            const response = await fetch("/api/products");
+
+            if (!response.ok) {
+                throw new Error("Failed to load products");
+            }
+
+            const data = await response.json();
+
+            setProducts(data);
+
+        } catch (error) {
+
+            setError(error.message);
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    }
+
+    return (
+        <div>
+
+            <button onClick={getProducts}>
+                Load Products
+            </button>
+
+            {loading && <p>Loading...</p>}
+
+            {error && <p>{error}</p>}
+
+            {products.map(product => (
+                <p key={product.id}>
+                    {product.name}
+                </p>
+            ))}
+
+        </div>
+    );
+
+}
+
+
+This is the type of code you will frequently encounter in React applications.
+
+Note: In a real application, you might fetch data in useEffect, a data-fetching library, or a framework-specific data-loading mechanism rather than directly in a click handler.
+
+Part 8: Where are these concepts used in React, Next.js and Node.js?
+Let's connect everything with your development stack.
+1. Closures in React
+Closures are used in event handlers and hooks.
+function Counter() {
+
+    let message = "Hello";
+
+    function handleClick() {
+
+        alert(message);
+
+    }
+
+    return (
+        <button onClick={handleClick}>
+            Click Me
+        </button>
+    );
+
+}
+
+
+The handleClick function remembers the message variable.
+
+Other examples:
+- useEffect
+- useCallback
+- Event listeners
+- Timers
+- Custom hooks
+2. Promises in React
+Whenever you communicate with an API, you commonly receive a Promise.
+const promise = fetch("/api/products");
+
+console.log(promise);
+
+
+fetch() returns a Promise.
+
+You can handle it with .then() or async/await.
+3. Async/Await in React
+Example of loading products from a Laravel API:
+import { useEffect, useState } from "react";
+
+function ProductList() {
+
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+
+        async function fetchProducts() {
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:8000/api/products"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to load products");
+                }
+
+                const data = await response.json();
+
+                setProducts(data);
+
+            } catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+        fetchProducts();
+
+    }, []);
+
+    return (
+
+        <div>
+
+            {products.map(product => (
+
+                <div key={product.id}>
+                    {product.name}
+                </div>
+
+            ))}
+
+        </div>
+
+    );
+
+}
+
+export default ProductList;
+
+
+Notice something important:
+
+You cannot make the useEffect callback itself async in the usual pattern:
+// Avoid this pattern
+
+useEffect(async () => {
+
+    // API request
+
+}, []);
+
+
+Why?
+
+Because React expects the effect callback to return either nothing or a cleanup function, whereas an async function always returns a Promise.
+
+Instead, create an async function inside useEffect and call it.
+4. Async/Await in Next.js
+In Next.js App Router, Server Components can be asynchronous.
+
+Example:
+async function ProductsPage() {
+
+    const response = await fetch(
+        "https://example.com/api/products"
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch products");
+    }
+
+    const products = await response.json();
+
+    return (
+
+        <div>
+
+            <h1>Products</h1>
+
+            {products.map(product => (
+
+                <p key={product.id}>
+                    {product.name}
+                </p>
+
+            ))}
+
+        </div>
+
+    );
+
+}
+
+export default ProductsPage;
+
+
+Here:
+- Next.js executes the Server Component on the server.
+- It awaits the API request.
+- It obtains the product data.
+- It renders the page using that data.
+This is a major reason understanding async/await is important when learning Next.js.
+
+You can also use async functions in Next.js Route Handlers:
+// app/api/products/route.js
+
+export async function GET() {
+
+    const products = [
+        { id: 1, name: "iPhone" },
+        { id: 2, name: "Samsung" }
+    ];
+
+    return Response.json(products);
+
+}
+
+
+And you can use async/await to query a database inside the handler.
+5. Async/Await in Node.js and Express
+This will be particularly useful for your Express and MongoDB project.
+
+Consider a product controller:
+const Product = require("../models/Product");
+
+const getProducts = async (req, res) => {
+
+    try {
+
+        const products = await Product.find({
+            status: "active"
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: products
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+
+};
+
+module.exports = {
+    getProducts
+};
+
+
+What is happening?
+const products = await Product.find({
+    status: "active"
+});
+
+
+MongoDB needs time to retrieve records.
+
+Mongoose returns a thenable query that supports Promise-style execution.
+
+await suspends the controller function until the query settles.
+
+Meanwhile, Node.js can handle other incoming requests.
+
+This is extremely important:
+
+Awaiting a database query does not stop your entire Node.js server.
+
+Other requests can continue to be processed while that query is waiting for the database.
+
+Part 9: PHP and Laravel comparison
+Since you already know PHP and Laravel, let's compare the concepts.
+JavaScript	PHP / Laravel comparison
+Closure	Anonymous function that can capture variables from its surrounding scope
+Promise	Represents an eventual asynchronous result
+Async	Marks a function as returning a Promise
+Await	Suspends the current async function until a Promise settles
+.then()	Similar in purpose to handling a deferred result, though not identical to PHP syntax
+try/catch	Same general error-handling concept in PHP
+Event loop	Runtime mechanism used to coordinate asynchronous operations
+
+1. PHP Closure example
+PHP:
+$name = "Haris";
+
+$greeting = function () use ($name) {
+
+    echo $name;
+
+};
+
+$greeting();
+
+
+JavaScript:
+const name = "Haris";
+
+const greeting = function () {
+
+    console.log(name);
+
+};
+
+greeting();
+
+
+Both functions can access variables from their surrounding lexical environment, although PHP's use clause explicitly captures variables.
+2. Laravel database query vs Mongoose
+Laravel:
+$products = Product::where(
+    'status',
+    'active'
+)->get();
+
+
+Express/Mongoose:
+const products = await Product.find({
+    status: "active"
+});
+
+
+The JavaScript code uses await because the database query is asynchronous.
+3. Why Node.js handles many requests efficiently
+Traditional synchronous PHP request handling and Node.js asynchronous I/O have different execution models.
+
+Node.js commonly uses an event-driven, non-blocking I/O architecture.
+
+For example, when a request needs database data:
+1. Node.js starts the database operation.
+2. The current request handler suspends at await.
+3. Node.js can process other available work.
+4. When the database operation finishes, the handler resumes.
+This is one of the important architectural ideas behind Node.js.
+
+Part 10: Common mistakes beginners make
+These are worth remembering.
+Mistake 1: Forgetting await
+Incorrect:
+async function getProducts() {
+
+    const products = fetch("/api/products");
+
+    console.log(products);
+
+}
+
+
+products contains a Promise, not the parsed response data.
+
+Correct:
+async function getProducts() {
+
+    const response = await fetch("/api/products");
+
+    const products = await response.json();
+
+    console.log(products);
+
+}
+
+
+Mistake 2: Thinking async makes everything asynchronous
+Incorrect assumption:
+async function calculate() {
+
+    let result = 10 + 20;
+
+    return result;
+
+}
+
+
+The calculation happens synchronously.
+
+The async function simply wraps its returned result in a Promise.
+Mistake 3: Using await outside an appropriate context
+In regular JavaScript scripts:
+const result = await getData();
+
+
+This is not valid everywhere.
+
+You can use await inside an async function, or at the top level of supported JavaScript modules.
+Mistake 4: Not handling errors
+Avoid:
+async function getData() {
+
+    const response = await fetch("/api/data");
+
+    const data = await response.json();
+
+}
+
+
+Prefer appropriate error handling:
+async function getData() {
+
+    try {
+
+        const response = await fetch("/api/data");
+
+        if (!response.ok) {
+            throw new Error("Request failed");
+        }
+
+        const data = await response.json();
+
+        return data;
+
+    } catch (error) {
+
+        console.error(error);
+
+        throw error;
+
+    }
+
+}
+
+
+Notice that this example rethrows the error. That allows the calling function to handle it too.
+Mistake 5: Sequentially awaiting independent requests
+Less efficient:
+const products = await getProducts();
+
+const categories = await getCategories();
+
+const users = await getUsers();
+
+
+Better:
+const [products, categories, users] =
+    await Promise.all([
+
+        getProducts(),
+        getCategories(),
+        getUsers()
+
+    ]);
+
+
+Use sequential awaits when one operation depends on another. Use concurrent execution when they are independent.
+
+Part 11: Test your understanding
+Try answering these questions before checking the answers.
+JavaScript knowledge check
+0/5 answered
+
+1. What is a closure?
+
+A function that executes immediately
+
+A function that remembers its surrounding lexical environment
+
+A Promise that is completed
+
+
+
+2. What does an async function always return?
+
+A string
+
+An array
+
+A Promise
+
+
+
+3. What does await suspend?
+
+The entire browser
+
+The current async function
+
+The entire Node.js server
+
+
+
+4. Which Promise method waits for all input Promises to fulfill?
+
+Promise.race()
+
+Promise.all()
+
+Promise.any()
+
+
+
+5. Which executes first after synchronous code: a Promise .then() callback or a setTimeout callback?
+
+setTimeout callback
+
+Promise .then() callback
+
+They always execute simultaneously
+
+
+Check my answers
+Part 12: Final revision notes
+Keep this table as a quick reference for your future React, Next.js, and Node.js development.
+Concept	Meaning	Common use
+Scope	Where a variable is accessible	Variables and functions
+Lexical scope	Scope determined by where code is written	Nested functions
+Closure	Function remembers surrounding variables	React callbacks, private data
+Callback	Function passed to another function	Events, timers
+Callback hell	Deeply nested callbacks	Complex asynchronous operations
+Promise	Represents an eventual result	API and database operations
+Pending	Promise is not settled yet	Waiting for response
+Fulfilled	Promise completed successfully	API success
+Rejected	Promise failed	API error
+.then()	Handles fulfillment	Promise chaining
+.catch()	Handles rejection	Error handling
+.finally()	Runs after settlement	Loading cleanup
+async	Declares a Promise-returning function	API functions
+await	Suspends the current async function	Waiting for results
+Promise.all	Waits for all Promises to fulfill	Parallel API requests
+Event loop	Coordinates asynchronous execution	Browser and Node.js
+Call stack	Tracks executing functions	JavaScript execution
+Microtask queue	Holds Promise reactions	Promise callbacks
+Task queue	Holds scheduled tasks	Timers and events
+
+The three concepts you should never confuse
+Closure
+A function remembers variables from its surrounding scope.
+function outer() {
+    let name = "Haris";
+
+    return function inner() {
+        console.log(name);
+    };
+}
+
+
+
+
+Promise
+An object represents the future result of an asynchronous operation.
+const promise = fetch("/api/users");
+
+promise.then(response => {
+    console.log(response);
+});
+
+
+
+
+Async/Await
+A cleaner way to write Promise-based asynchronous code.
+async function getUsers() {
+    const response = await fetch("/api/users");
+    return response.json();
+}
+
+
+
+
+Recommended learning order
+For your next stage of JavaScript and Next.js learning, I recommend this sequence:
+1. Scope and lexical environment.
+2. Closures.
+3. Callbacks and callback hell.
+4. Synchronous vs asynchronous JavaScript.
+5. Promises and Promise chaining.
+6. Async/await and error handling.
+7. Call stack and event loop.
+8. Microtasks and macrotasks.
+9. Fetch API and Axios.
+10. Async/await in React hooks, Next.js Server Components, and Express controllers.

@@ -1,16 +1,20 @@
 {
   "name": "modern-javascript-and-nextjs-rendering-masterclass",
   "version": "1.0.0",
-  "description": "Complete Modern JavaScript (ES6+ to ES2024) and Next.js 15 Rendering Architecture masterclass with 64 runnable modules and an interactive live Next.js playground for React, Next.js, and Node.js developers.",
+  "description": "Complete Modern JavaScript (ES6+ to ES2024), Next.js 15 Rendering Architecture, and React Foundations masterclass with 79 runnable modules, a Next.js rendering playground, and a dedicated React concepts playground for React, Next.js, and Node.js developers.",
   "main": "run-all.js",
   "scripts": {
     "test": "node run-all.js",
     "test:js": "node 01-javascript-core-and-advanced/run-all.js",
     "test:rendering": "node 02-rendering-react-and-nextjs/run-all.js",
+    "test:react": "node 03-react-foundations-and-playground/run-all.js",
     "setup": "npm --prefix 02-rendering-react-and-nextjs/playground install",
     "playground:dev": "npm --prefix 02-rendering-react-and-nextjs/playground run dev",
     "playground:build": "npm --prefix 02-rendering-react-and-nextjs/playground run build",
     "playground:start": "npm --prefix 02-rendering-react-and-nextjs/playground run start",
+    "react-playground:install": "npm --prefix 03-react-foundations-and-playground/react-playground install",
+    "react-playground:dev": "npm --prefix 03-react-foundations-and-playground/react-playground run dev",
+    "react-playground:build": "npm --prefix 03-react-foundations-and-playground/react-playground run build",
     "start": "node run-all.js"
   },
   "keywords": [

@@ -1,0 +1,14 @@
+{
+  "name": "react-foundations-and-playground",
+  "version": "1.0.0",
+  "description": "Complete Guide to React Concepts, JavaScript Foundations, and Interactive Playground",
+  "main": "run-all.js",
+  "scripts": {
+    "test": "node run-all.js",
+    "playground:install": "npm --prefix react-playground install",
+    "playground:dev": "npm --prefix react-playground run dev",
+    "playground:build": "npm --prefix react-playground run build"
+  },
+  "author": "Haris Ali",
+  "license": "MIT"
+}

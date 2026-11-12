@@ -7,10 +7,11 @@
  *   node run-all.js
  * 
  * Purpose:
- *   Executes both test suites across the repository:
- *   1. 01-javascript-core-and-advanced (40 Modules)
- *   2. 02-rendering-react-and-nextjs   (24 Modules)
- *   Total: 64 Modules Tested and Verified!
+ *   Executes all three test suites across the repository:
+ *   1. 01-javascript-core-and-advanced   (40 Modules)
+ *   2. 02-rendering-react-and-nextjs     (24 Modules)
+ *   3. 03-react-foundations-and-playground (25 Modules)
+ *   Total: 89 Modules Tested and Verified!
  * ============================================================================
  */
 
@@ -18,12 +19,13 @@ const { execSync } = require("node:child_process");
 const path = require("node:path");
 
 console.log("==================================================================");
-console.log("  FULL REPOSITORY TEST SUITE: JAVASCRIPT & RENDERING");
+console.log("  FULL REPOSITORY TEST SUITE: JAVASCRIPT, RENDERING & REACT");
 console.log("==================================================================\n");
 
 const folders = [
   { name: "01-javascript-core-and-advanced", expected: 40 },
   { name: "02-rendering-react-and-nextjs", expected: 24 },
+  { name: "03-react-foundations-and-playground", expected: 25 },
 ];
 
 let totalPassed = 0;
